@@ -24,7 +24,7 @@ def solve(categories, minNutrition, maxNutrition, foods, cost,
 
     # Nutrition constraints
     m.addConstrs(
-        (quicksum(nutritionValues[f,c] * buy[f] for f in foods)
+        (quicksum(nutritionValues[f, c] * buy[f] for f in foods)
         	== [minNutrition[c], maxNutrition[c]]
          for c in categories), "_")
 
@@ -38,6 +38,8 @@ def solve(categories, minNutrition, maxNutrition, foods, cost,
                 if buy[f].x > 0.0001:
                     print('%s %g' % (f, buyx[f]))
         else:
+            m.computeIIS()
+            m.write("m.ilp")
             print('No solution')
 
     # Solve

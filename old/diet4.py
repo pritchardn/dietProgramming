@@ -17,7 +17,7 @@ import os
 import xlrd
 import dietmodel
 
-book = xlrd.open_workbook(os.path.join(".", "diet.xls"))
+book = xlrd.open_workbook(os.path.join("..", "diet.xls"))
 
 sh = book.sheet_by_name("Categories")
 categories = []

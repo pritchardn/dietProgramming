@@ -1,0 +1,9 @@
+Age,Vitamin A RDI (ug/day),Vitamin A UL (ug/day),Thiamin RDI (mg/day),Riboflavin RDI (mg/day),Niacin RDI (mg/day),Vitamin B6 RDI (mg/day),Vitamin B6 UL (mg/day),Vitamin B12 RDI (ug/day),Folate RDI (ug/day),Folate UL (ug/day),Pantothenic Acid RDI (mg/day),Biotin RDI (ug/day),Choline RDI (mg/day),Choline UL (mg/day),Vitamin C RDI (mg/day),Vitamin D RDI (ug/day),Vitamin D UL (ug/day),Vitamin E RDI (mg/day),Vitamin E UL (mg/day),Vitamin K RDI (ug/day)
+3,300,600,0.5,0.5,6,0.5,15,0.9,150,300,3.5,8,200,1000,35,5,80,5,70,25
+8,400,900,0.6,0.6,8,0.6,20,1.2,200,400,4,12,250,1000,35,5,80,6,100,35
+13,600,1700,0.9,0.9,12,1,30,1.8,300,600,5,20,375,1000,40,5,80,9,180,45
+18,900,2800,1.2,1.3,16,1.3,40,2.4,400,800,6,30,550,3000,40,5,80,10,250,55
+30,900,3000,1.2,1.3,16,1.3,50,2.4,400,1000,6,30,550,3500,45,5,80,10,300,70
+50,900,3000,1.2,1.3,16,1.3,50,2.4,400,1000,6,30,550,3500,45,5,80,10,300,70
+70,900,3000,1.2,1.3,16,1.7,50,2.4,400,1000,6,30,550,3500,45,10,80,10,300,70
+110,900,3000,1.2,1.6,16,1.7,50,2.4,400,1000,6,30,550,3500,45,15,80,10,300,70

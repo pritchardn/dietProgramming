@@ -6,6 +6,8 @@ Contains classes returning dietary limits based on nhmrc guidelines
 import enum
 
 import pandas as pd
+import numpy as np
+import json
 from pydantic import BaseModel
 
 
@@ -22,7 +24,7 @@ class Unit(enum.Enum):
 
 class Nutrient(BaseModel):
     rdi: float
-    ul: float
+    ul: float = None
     unit: str
 
 
@@ -31,7 +33,7 @@ class Human(BaseModel):
     sex: Sex
     height: int
     weight: float
-    activity: float
+    activity: float  # TODO: make enum 1.2-2.2
 
 
 class NutritionLevels(BaseModel):
@@ -96,37 +98,37 @@ def init_energy():
 
 def init_protein():
     return {
-            Sex.Female: _fetch_csv('../../data/female-protein.csv'),
-            Sex.Male: _fetch_csv('../../data/male-protein.csv')
-        }
+        Sex.Female: _fetch_csv('../../data/female-protein.csv'),
+        Sex.Male: _fetch_csv('../../data/male-protein.csv')
+    }
 
 
 def init_fibre():
     return {
-            Sex.Female: _fetch_csv('../../data/female-fibre.csv'),
-            Sex.Male: _fetch_csv('../../data/male-fibre.csv')
-        }
+        Sex.Female: _fetch_csv('../../data/female-fibre.csv'),
+        Sex.Male: _fetch_csv('../../data/male-fibre.csv')
+    }
 
 
 def init_water():
     return {
-            Sex.Female: _fetch_csv('../../data/female-water.csv'),
-            Sex.Male: _fetch_csv('../../data/male-water.csv')
-        }
+        Sex.Female: _fetch_csv('../../data/female-water.csv'),
+        Sex.Male: _fetch_csv('../../data/male-water.csv')
+    }
 
 
 def init_alinoleic():
     return {
-            Sex.Female: _fetch_csv('../../data/female-alinoleic.csv'),
-            Sex.Male: _fetch_csv('../../data/male-alinoleic.csv')
-        }
+        Sex.Female: _fetch_csv('../../data/female-alinoleic.csv'),
+        Sex.Male: _fetch_csv('../../data/male-alinoleic.csv')
+    }
 
 
 def init_n3fat():
     return {
-            Sex.Female: _fetch_csv('../../data/female-n3fats.csv'),
-            Sex.Male: _fetch_csv('../../data/male-n3fats.csv')
-        }
+        Sex.Female: _fetch_csv('../../data/female-n3fats.csv'),
+        Sex.Male: _fetch_csv('../../data/male-n3fats.csv')
+    }
 
 
 def init_minerals():
@@ -157,25 +159,42 @@ def initialize_data():
     return nutrient_data
 
 
-def calculate_energy(human: Human, energy_data: dict):
-    if human.age < 19:
-        target_data = energy_data['child'][human.sex]
+def cal_to_kj(calories: float):
+    return calories * 4.184
+
+
+def calculate_energy(human: Human):
+    """
+    Uses the IOM equations to estimate EER
+    Institute of Medicine Equation. (2022, March 27). In Wikipedia. https://en.wikipedia.org/wiki/Institute_of_Medicine_Equation
+    :param human: mass (kg), height (m), age (years), sex and activity level are of interest
+    :return: EER (MJ)
+    """
+    if human.age >= 19:
+        if human.sex == Sex.Male:
+            output = 662 - (9.53 * human.age) + human.activity * (
+                        (15.91 * human.weight) + (539.6 * human.height))
+        else:
+            output = 354 - (6.91 * human.age) + human.activity * (
+                        (9.36 * human.weight) + (726 * human.height))
     else:
-        target_data = energy_data['adult'][human.sex]
-    print(target_data)
-    target_row = target_data.index(human.age)
-    print(target_row)
+        if human.sex == Sex.Male:
+            output = 88.5 - (61.9 * human.age) + human.activity * (
+                        (26.7 * human.weight) + (903 * human.height))
+        else:
+            output = 135.3 - (30.8 * human.age) + human.activity * (
+                        (10 * human.weight) + (934 * human.height))
+    return cal_to_kj(output)
 
 
 def nutrition_limits(human_model: Human, nutrient_data: dict) -> NutritionLevels:
     output = NutritionLevels()
-    output.energy = Nutrient(unit="g/day", rdi=3, ul=3)
-    calculate_energy(human_model, nutrient_data['energy'])
+    output.energy = Nutrient(unit="kj", rdi=calculate_energy(human_model))
     return output
 
 
 if __name__ == "__main__":
     data = initialize_data()
-    test_human = Human(age=15, sex=Sex.Male, height=190, weight=100, activity=1.2)
+    test_human = Human(age=25, sex=Sex.Male, height=1.83, weight=83.9, activity=1.2)
     test_nutrients = nutrition_limits(test_human, data)
     print(test_nutrients.energy)

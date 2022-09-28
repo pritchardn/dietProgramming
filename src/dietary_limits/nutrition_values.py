@@ -20,7 +20,7 @@ def initialize_food_data():
     food_data = pd.read_csv('../../data/nutrients-solid.csv')
     columns = ['Food Name', 'Price ($/100g)', 'Energy with dietary fibre, equated \n(kJ)',
                'Moisture (water) \n(g)', 'Protein \n(g)', 'Fat, total \n(g)',
-               'Total dietary fibre \n(g)', 'Total long chain omega 3 fatty acids, equated \n(%T)',
+               'Total dietary fibre \n(g)', 'Total long chain omega 3 fatty acids, equated \n(mg)',
                'Vitamin A retinol equivalents \n(ug)',
                'Thiamin (B1) \n(mg)', 'Riboflavin (B2) \n(mg)',
                'Niacin derived equivalents \n(mg)', 'Pyridoxine (B6) \n(mg)',
@@ -33,7 +33,6 @@ def initialize_food_data():
                'Phosphorus (P) \n(mg)', 'Potassium (K) \n(mg)', 'Selenium (Se) \n(ug)',
                'Sodium (Na) \n(mg)', 'Zinc (Zn) \n(mg)']
     food_data = food_data[columns]
-
     new_columns = ['name', 'price', 'energy', 'water_food', 'protein', 'fat', 'fibre', 'n3fat',
                    'vitamin_a', 'thiamin', 'riboflavin', 'niacin', 'vitamin_b6',
                    'vitamin_b12', 'folate', 'pantothenic_acid', 'biotin', 'vitamin_c',
@@ -42,6 +41,8 @@ def initialize_food_data():
                    'manganese',
                    'molybdenum', 'phosphorus', 'potassium', 'selenium', 'sodium', 'zinc']
     food_data.columns = new_columns
+    food_data.replace('', 0.0, inplace=True)
+    food_data.replace(float('nan'), 0.0, inplace=True)
     return food_data.to_dict('list')
 
 

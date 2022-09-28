@@ -283,12 +283,12 @@ def nutrition_limits(human_model: Human, nutrient_data: dict) -> NutritionLevels
                               rdi=calculate_protein(human_model, nutrient_data['protein']))
     water_liquid, water_food = calculate_water(human_model, nutrient_data['water'])
     #output.water_liquid = Nutrient(unit="L/day", rdi=water_liquid)
-    output.water_food = Nutrient(unit="L/day", rdi=water_food)
+    output.water_food = Nutrient(unit="g/day", rdi=water_food * 1000)
     output.fibre = Nutrient(unit="g/day", rdi=calculate_fibre(human_model, nutrient_data['fibre']))
     # output.alinoleic = Nutrient(unit="g/day", rdi=calculate_alinoleic(human_model, nutrient_data['alinoleic']))
     # output.linoleic = Nutrient(unit="g/day", rdi=calculate_linoleic(human_model, nutrient_data['linoleic']))
     n3_rdi, n3_ul = calculate_n3fat(human_model, nutrient_data['n3fat'])
-    output.n3fat = Nutrient(unit="g/day", rdi=n3_rdi, ul=n3_ul)
+    output.n3fat = Nutrient(unit="mg/day", rdi=n3_rdi, ul=n3_ul)
     vitamin_dict = calculate_vitamins(human_model, nutrient_data['vitamins'])
     output.vitamin_a = vitamin_dict['vitamin_a']
     output.thiamin = vitamin_dict['thiamin']
@@ -301,6 +301,7 @@ def nutrition_limits(human_model: Human, nutrient_data: dict) -> NutritionLevels
     output.biotin = vitamin_dict['biotin']
     # output.choline = vitamin_dict['choline']
     output.vitamin_c = vitamin_dict['vitamin_c']
+
     output.vitamin_d = vitamin_dict['vitamin_d']
     output.vitamin_e = vitamin_dict['vitamin_e']
     # output.vitamin_k = vitamin_dict['vitamin_k']

@@ -1,5 +1,5 @@
 """
-Loads nutrition data into a data structure
+Loads nutrition data into a list.
 
 @author Nicholas Pritchard nicholas.pritchard@uwa.edu.au
 """
@@ -7,7 +7,7 @@ Loads nutrition data into a data structure
 import pandas as pd
 from pydantic import BaseModel
 
-from dietary_limits import NutritionLevels
+from src.dietary_limits.dietary_limits import NutritionLevels
 
 
 class Food(BaseModel):
@@ -16,7 +16,7 @@ class Food(BaseModel):
     nutrients: NutritionLevels
 
 
-def initialize_data():
+def initialize_food_data():
     food_data = pd.read_csv('../../data/nutrients-solid.csv')
     columns = ['Food Name', 'Price ($/100g)', 'Energy with dietary fibre, equated \n(kJ)',
                'Moisture (water) \n(g)', 'Protein \n(g)', 'Fat, total \n(g)',
@@ -34,7 +34,7 @@ def initialize_data():
                'Sodium (Na) \n(mg)', 'Zinc (Zn) \n(mg)']
     food_data = food_data[columns]
 
-    new_columns = ['name', 'price', 'energy', 'water', 'protein', 'fat', 'fibre', 'n3',
+    new_columns = ['name', 'price', 'energy', 'water_food', 'protein', 'fat', 'fibre', 'n3fat',
                    'vitamin_a', 'thiamin', 'riboflavin', 'niacin', 'vitamin_b6',
                    'vitamin_b12', 'folate', 'pantothenic_acid', 'biotin', 'vitamin_c',
                    'vitamin_d', 'vitamin_e', 'calcium',
@@ -46,4 +46,4 @@ def initialize_data():
 
 
 if __name__ == "__main__":
-    data = initialize_data()
+    data = initialize_food_data()

@@ -39,11 +39,11 @@ class NutritionLevels(BaseModel):
     protein: Nutrient = None
     fibre: Nutrient = None
     water_food: Nutrient = None
-    water_liquid: Nutrient = None
+    # water_liquid: Nutrient = None
     # Carbs can be taken as the rest
     # Fats
-    alinoleic: Nutrient = None
-    linoleic: Nutrient = None
+    # alinoleic: Nutrient = None
+    # linoleic: Nutrient = None
     n3fat: Nutrient = None
     # Vitamins
     vitamin_a: Nutrient = None
@@ -55,11 +55,11 @@ class NutritionLevels(BaseModel):
     folate: Nutrient = None
     pantothenic_acid: Nutrient = None
     biotin: Nutrient = None
-    choline: Nutrient = None
+    # choline: Nutrient = None
     vitamin_c: Nutrient = None
     vitamin_d: Nutrient = None
     vitamin_e: Nutrient = None
-    vitamin_k: Nutrient = None
+    # vitamin_k: Nutrient = None
     # Minerals
     calcium: Nutrient = None
     chromium: Nutrient = None
@@ -157,8 +157,8 @@ def initialize_data():
         'protein': init_protein(),
         'fibre': init_fibre(),
         'water': init_water(),
-        'alinoleic': init_alinoleic(),
-        'linoleic': init_linoleic(),
+        # 'alinoleic': init_alinoleic(),
+        # 'linoleic': init_linoleic(),
         'n3fat': init_n3fat(),
         'minerals': init_minerals(),
         'vitamins': init_vitamins()
@@ -244,7 +244,7 @@ def calculate_minerals(human: Human, mineral_data: dict):
         'fluoride': Nutrient(unit="mg/day", rdi=current_data['Fluoride RDI (mg/day)'][best_index], ul=current_data['Fluoride UL (mg/day)'][best_index]),
         'iodine': Nutrient(unit="ug/day", rdi=current_data['Iodine RDI (ug/day)'][best_index], ul=current_data['Iodine UL (ug/day)'][best_index]),
         'iron': Nutrient(unit="mg/day", rdi=current_data['Iron RDI (mg/day)'][best_index], ul=current_data['Iron UL (mg/day)'][best_index]),
-        'magnesium': Nutrient(unit="mg/day", rdi=current_data['Magnesium RDI (mg/day)'][best_index], ul=current_data['Magnesium UL (mg/day)'][best_index]),
+        'magnesium': Nutrient(unit="mg/day", rdi=current_data['Magnesium RDI (mg/day)'][best_index]),  # , ul=current_data['Magnesium UL (mg/day)'][best_index]),
         'manganese': Nutrient(unit="mg/day", rdi=current_data['Manganese RDI (mg/day)'][best_index]),
         'molybdenum': Nutrient(unit="ug/day", rdi=current_data['Molybdenum RDI (ug/day)'][best_index]),
         'phosphorus': Nutrient(unit="mg/day", rdi=current_data['Phosphorus RDI (mg/day)'][best_index], ul=current_data['Phosphorus UL (mg/day)'][best_index]),
@@ -265,14 +265,14 @@ def calculate_vitamins(human: Human, vitamin_data: dict):
         'niacin': Nutrient(unit="mg/day", rdi=current_data['Niacin RDI (mg/day)'][best_index]),
         'vitamin_b6': Nutrient(unit="mg/day", rdi=current_data['Vitamin B6 RDI (mg/day)'][best_index], ul=current_data['Vitamin B6 UL (mg/day)'][best_index]),
         'vitamin_b12': Nutrient(unit="ug/day", rdi=current_data['Vitamin B12 RDI (ug/day)'][best_index]),
-        'folate': Nutrient(unit="ug/day", rdi=current_data['Folate RDI (ug/day)'][best_index], ul=current_data['Folate RDI (ug/day)'][best_index]),
+        'folate': Nutrient(unit="ug/day", rdi=current_data['Folate RDI (ug/day)'][best_index], ul=current_data['Folate UL (ug/day)'][best_index]),
         'pantothenic_acid': Nutrient(unit="mg/day", rdi=current_data['Pantothenic Acid RDI (mg/day)'][best_index]),
         'biotin': Nutrient(unit="ug/day", rdi=current_data['Biotin RDI (ug/day)'][best_index]),
-        'choline': Nutrient(unit="mg/day", rdi=current_data['Choline RDI (mg/day)'][best_index], ul=current_data['Choline UL (mg/day)'][best_index]),
+        # 'choline': Nutrient(unit="mg/day", rdi=current_data['Choline RDI (mg/day)'][best_index], ul=current_data['Choline UL (mg/day)'][best_index]),
         'vitamin_c': Nutrient(unit="mg/day", rdi=current_data['Vitamin C RDI (mg/day)'][best_index]),
         'vitamin_d': Nutrient(unit="ug/day", rdi=current_data['Vitamin D RDI (ug/day)'][best_index], ul=current_data['Vitamin D UL (ug/day)'][best_index]),
         'vitamin_e': Nutrient(unit="mg/day", rdi=current_data['Vitamin E RDI (mg/day)'][best_index], ul=current_data['Vitamin E UL (mg/day)'][best_index]),
-        'vitamin_k': Nutrient(unit="ug/day", rdi=current_data['Vitamin K RDI (ug/day)'][best_index])
+        # 'vitamin_k': Nutrient(unit="ug/day", rdi=current_data['Vitamin K RDI (ug/day)'][best_index])
     }
 
 
@@ -282,11 +282,11 @@ def nutrition_limits(human_model: Human, nutrient_data: dict) -> NutritionLevels
     output.protein = Nutrient(unit="g/day",
                               rdi=calculate_protein(human_model, nutrient_data['protein']))
     water_liquid, water_food = calculate_water(human_model, nutrient_data['water'])
-    output.water_liquid = Nutrient(unit="L/day", rdi=water_liquid)
+    #output.water_liquid = Nutrient(unit="L/day", rdi=water_liquid)
     output.water_food = Nutrient(unit="L/day", rdi=water_food)
     output.fibre = Nutrient(unit="g/day", rdi=calculate_fibre(human_model, nutrient_data['fibre']))
-    output.alinoleic = Nutrient(unit="g/day", rdi=calculate_alinoleic(human_model, nutrient_data['alinoleic']))
-    output.linoleic = Nutrient(unit="g/day", rdi=calculate_linoleic(human_model, nutrient_data['linoleic']))
+    # output.alinoleic = Nutrient(unit="g/day", rdi=calculate_alinoleic(human_model, nutrient_data['alinoleic']))
+    # output.linoleic = Nutrient(unit="g/day", rdi=calculate_linoleic(human_model, nutrient_data['linoleic']))
     n3_rdi, n3_ul = calculate_n3fat(human_model, nutrient_data['n3fat'])
     output.n3fat = Nutrient(unit="g/day", rdi=n3_rdi, ul=n3_ul)
     vitamin_dict = calculate_vitamins(human_model, nutrient_data['vitamins'])
@@ -299,11 +299,11 @@ def nutrition_limits(human_model: Human, nutrient_data: dict) -> NutritionLevels
     output.folate = vitamin_dict['folate']
     output.pantothenic_acid = vitamin_dict['pantothenic_acid']
     output.biotin = vitamin_dict['biotin']
-    output.choline = vitamin_dict['choline']
+    # output.choline = vitamin_dict['choline']
     output.vitamin_c = vitamin_dict['vitamin_c']
     output.vitamin_d = vitamin_dict['vitamin_d']
     output.vitamin_e = vitamin_dict['vitamin_e']
-    output.vitamin_k = vitamin_dict['vitamin_k']
+    # output.vitamin_k = vitamin_dict['vitamin_k']
     mineral_dict = calculate_minerals(human_model, nutrient_data['minerals'])
     output.calcium = mineral_dict['calcium']
     output.chromium = mineral_dict['chromium']

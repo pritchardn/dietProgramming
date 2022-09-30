@@ -283,7 +283,7 @@ def nutrition_limits(human_model: Human, nutrient_data: dict) -> NutritionLevels
                               rdi=calculate_protein(human_model, nutrient_data['protein']))
     water_liquid, water_food = calculate_water(human_model, nutrient_data['water'])
     #output.water_liquid = Nutrient(unit="L/day", rdi=water_liquid)
-    output.water_food = Nutrient(unit="g/day", rdi=water_food * 1000)
+    output.water_food = Nutrient(unit="g/day", rdi=water_food * 1000, ul=water_food * 2000)
     output.fibre = Nutrient(unit="g/day", rdi=calculate_fibre(human_model, nutrient_data['fibre']))
     # output.alinoleic = Nutrient(unit="g/day", rdi=calculate_alinoleic(human_model, nutrient_data['alinoleic']))
     # output.linoleic = Nutrient(unit="g/day", rdi=calculate_linoleic(human_model, nutrient_data['linoleic']))

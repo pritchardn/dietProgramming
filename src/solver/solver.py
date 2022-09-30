@@ -3,10 +3,10 @@ Solves the Stiegler diet problem with additional nutrition constraints and local
 
 @author Nicholas Pritchard nicholas.pritchard@uwa.edu.au
 """
+from ortools.linear_solver import pywraplp
+
 from src.dietary_limits.dietary_limits import initialize_data, Human, Sex, nutrition_limits
 from src.dietary_limits.nutrition_values import initialize_food_data
-
-from ortools.linear_solver import pywraplp
 
 if __name__ == "__main__":
     limits_data = initialize_data()
@@ -26,9 +26,11 @@ if __name__ == "__main__":
     constraints = []
     i = 0
     lower_bound = 0.9
-    upper_bound = 1.1
+    upper_bound = 1.5
+    days_of_diet = 1
     for nut_name, nut_val in nutrient_limits:
-        constraints.append(solver.Constraint(nut_val.rdi * lower_bound, nut_val.rdi * upper_bound))
+        constraints.append(solver.Constraint(nut_val.rdi * days_of_diet, days_of_diet * (
+            nut_val.ul if nut_val.ul > 0.0 else nut_val.rdi * upper_bound)))
         for j, item in enumerate(food_data[nut_name]):
             constraints[i].SetCoefficient(foods[j], item)
         i += 1

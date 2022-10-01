@@ -49,7 +49,14 @@ def solve(limits_data, food_data, human: Human, upper_bound) -> Diet:
             print('A potentially suboptimal solution was found.')
         else:
             print('The solver could not solve the problem.')
-            exit(1)
+            return Diet(human=human,
+                        nutritionLevels=nutrient_limits,
+                        foods={},
+                        nutrients={},
+                        cost=0.0,
+                        solve_time_ms = 0.0,
+                        solve_iterations=0,
+                        restriction=Restriction.FULL)
 
     total_nutrients = {nutrient[0]: 0 for nutrient in nutrient_limits}
     total_cost = 0.0
@@ -76,8 +83,9 @@ def main():
     limits_data = initialize_data()
     food_data = initialize_food_data()
     human = Human(age=25, sex=Sex.Male, height=1.83, weight=83.9, activity=1.0)
-    diet = solve(limits_data, food_data, human, 1.2)
-    print(diet.to_string())
+    diet = solve(limits_data, food_data, human, 0.9)
+    out_dir = "../../results/"
+    diet.save_to_file(out_dir)
 
 
 if __name__ == "__main__":

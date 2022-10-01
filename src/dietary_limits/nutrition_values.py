@@ -18,20 +18,20 @@ class Food(BaseModel):
 
 def initialize_food_data():
     food_data = pd.read_csv('../../data/nutrients-solid.csv')
-    columns = ['Food Name', 'Price ($/100g)', 'Energy with dietary fibre, equated \n(kJ)',
-               'Moisture (water) \n(g)', 'Protein \n(g)', 'Fat, total \n(g)',
-               'Total dietary fibre \n(g)', 'Total long chain omega 3 fatty acids, equated \n(mg)',
-               'Vitamin A retinol equivalents \n(ug)',
-               'Thiamin (B1) \n(mg)', 'Riboflavin (B2) \n(mg)',
-               'Niacin derived equivalents \n(mg)', 'Pyridoxine (B6) \n(mg)',
-               'Cobalamin (B12) \n(ug)', 'Dietary folate equivalents \n(ug)',
-               'Pantothenic acid (B5) \n(mg)', 'Biotin (B7) \n(ug)',
-               'Vitamin C \n(mg)', 'Vitamin D3 equivalents \n(ug)', 'Vitamin E \n(mg)',
-               'Calcium (Ca) \n(mg)', 'Chromium (Cr) \n(ug)', 'Copper (Cu) \n(mg)',
-               'Fluoride (F) \n(ug)', 'Iodine (I) \n(ug)', 'Iron (Fe) \n(mg)',
-               'Magnesium (Mg) \n(mg)', 'Manganese (Mn) \n(mg)', 'Molybdenum (Mo) \n(ug)',
-               'Phosphorus (P) \n(mg)', 'Potassium (K) \n(mg)', 'Selenium (Se) \n(ug)',
-               'Sodium (Na) \n(mg)', 'Zinc (Zn) \n(mg)']
+    columns = ['Food Name', 'Price ($/100g)', 'Energy with dietary fibre, equated (kJ)',
+               'Moisture (water) (g)', 'Protein (g)', 'Fat, total (g)',
+               'Total dietary fibre (g)', 'Total long chain omega 3 fatty acids, equated (mg)',
+               'Vitamin A retinol equivalents (ug)',
+               'Thiamin (B1) (mg)', 'Riboflavin (B2) (mg)',
+               'Niacin derived equivalents (mg)', 'Pyridoxine (B6) (mg)',
+               'Cobalamin (B12) (ug)', 'Dietary folate equivalents (ug)',
+               'Pantothenic acid (B5) (mg)', 'Biotin (B7) (ug)',
+               'Vitamin C (mg)', 'Vitamin D3 equivalents (ug)', 'Vitamin E (mg)',
+               'Calcium (Ca) (mg)', 'Chromium (Cr) (ug)', 'Copper (Cu) (mg)',
+               'Fluoride (F) (ug)', 'Iodine (I) (ug)', 'Iron (Fe) (mg)',
+               'Magnesium (Mg) (mg)', 'Manganese (Mn) (mg)', 'Molybdenum (Mo) (ug)',
+               'Phosphorus (P) (mg)', 'Potassium (K) (mg)', 'Selenium (Se) (ug)',
+               'Sodium (Na) (mg)', 'Zinc (Zn) (mg)']
     food_data = food_data[columns]
     new_columns = ['name', 'price', 'energy', 'water_food', 'protein', 'fat', 'fibre', 'n3fat',
                    'vitamin_a', 'thiamin', 'riboflavin', 'niacin', 'vitamin_b6',

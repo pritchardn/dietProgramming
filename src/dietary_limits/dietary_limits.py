@@ -9,15 +9,23 @@ import pandas as pd
 from pydantic import BaseModel
 
 
-class Sex(enum.Enum):
+class Sex(str, enum.Enum):
     Male = 0
     Female = 1
 
 
-class Unit(enum.Enum):
+class Unit(str, enum.Enum):
     ug = 6
     mg = 3
     g = 1
+
+
+class Restriction(str, enum.Enum):
+    FULL = 0
+    VEGETARIAN = 1
+    VEGAN = 2
+    GLUTEN = 3
+    NUTS = 4
 
 
 class Nutrient(BaseModel):
@@ -238,20 +246,35 @@ def calculate_minerals(human: Human, mineral_data: dict):
     current_data = mineral_data[human.sex]
     best_index = find_best_index(human.age, current_data['Age'])
     return {
-        'calcium': Nutrient(unit="mg/day", rdi=current_data['Calcium RDI (mg/day)'][best_index], ul=current_data['Calcium UL (mg/day)'][best_index]),
+        'calcium': Nutrient(unit="mg/day", rdi=current_data['Calcium RDI (mg/day)'][best_index],
+                            ul=current_data['Calcium UL (mg/day)'][best_index]),
         'chromium': Nutrient(unit="ug/day", rdi=current_data['Chromium RDI (ug/day)'][best_index]),
-        'copper': Nutrient(unit="mg/day", rdi=current_data['Copper RDI (mg/day)'][best_index], ul=current_data['Copper UL (mg/day)'][best_index]),
-        'fluoride': Nutrient(unit="mg/day", rdi=current_data['Fluoride RDI (mg/day)'][best_index], ul=current_data['Fluoride UL (mg/day)'][best_index]),
-        'iodine': Nutrient(unit="ug/day", rdi=current_data['Iodine RDI (ug/day)'][best_index], ul=current_data['Iodine UL (ug/day)'][best_index]),
-        'iron': Nutrient(unit="mg/day", rdi=current_data['Iron RDI (mg/day)'][best_index], ul=current_data['Iron UL (mg/day)'][best_index]),
-        'magnesium': Nutrient(unit="mg/day", rdi=current_data['Magnesium RDI (mg/day)'][best_index]),  # , ul=current_data['Magnesium UL (mg/day)'][best_index]),
-        'manganese': Nutrient(unit="mg/day", rdi=current_data['Manganese RDI (mg/day)'][best_index]),
-        'molybdenum': Nutrient(unit="ug/day", rdi=current_data['Molybdenum RDI (ug/day)'][best_index]),
-        'phosphorus': Nutrient(unit="mg/day", rdi=current_data['Phosphorus RDI (mg/day)'][best_index], ul=current_data['Phosphorus UL (mg/day)'][best_index]),
-        'potassium': Nutrient(unit="mg/day", rdi=current_data['Potassium RDI (mg/day)'][best_index]),
-        'selenium': Nutrient(unit="ug/day", rdi=current_data['Selenium RDI (ug/day)'][best_index], ul=current_data['Selenium UL (ug/day)'][best_index]),
-        'sodium': Nutrient(unit="mg/day", rdi=current_data['Sodium RDI (mg/day)'][best_index], ul=current_data['Sodium UL (mg/day)'][best_index]),
-        'zinc': Nutrient(unit="mg/day", rdi=current_data['Zinc RDI (mg/day)'][best_index], ul=current_data['Zinc UL (mg/day)'][best_index])
+        'copper': Nutrient(unit="mg/day", rdi=current_data['Copper RDI (mg/day)'][best_index],
+                           ul=current_data['Copper UL (mg/day)'][best_index]),
+        'fluoride': Nutrient(unit="mg/day", rdi=current_data['Fluoride RDI (mg/day)'][best_index],
+                             ul=current_data['Fluoride UL (mg/day)'][best_index]),
+        'iodine': Nutrient(unit="ug/day", rdi=current_data['Iodine RDI (ug/day)'][best_index],
+                           ul=current_data['Iodine UL (ug/day)'][best_index]),
+        'iron': Nutrient(unit="mg/day", rdi=current_data['Iron RDI (mg/day)'][best_index],
+                         ul=current_data['Iron UL (mg/day)'][best_index]),
+        'magnesium': Nutrient(unit="mg/day",
+                              rdi=current_data['Magnesium RDI (mg/day)'][best_index]),
+        # , ul=current_data['Magnesium UL (mg/day)'][best_index]),
+        'manganese': Nutrient(unit="mg/day",
+                              rdi=current_data['Manganese RDI (mg/day)'][best_index]),
+        'molybdenum': Nutrient(unit="ug/day",
+                               rdi=current_data['Molybdenum RDI (ug/day)'][best_index]),
+        'phosphorus': Nutrient(unit="mg/day",
+                               rdi=current_data['Phosphorus RDI (mg/day)'][best_index],
+                               ul=current_data['Phosphorus UL (mg/day)'][best_index]),
+        'potassium': Nutrient(unit="mg/day",
+                              rdi=current_data['Potassium RDI (mg/day)'][best_index]),
+        'selenium': Nutrient(unit="ug/day", rdi=current_data['Selenium RDI (ug/day)'][best_index],
+                             ul=current_data['Selenium UL (ug/day)'][best_index]),
+        'sodium': Nutrient(unit="mg/day", rdi=current_data['Sodium RDI (mg/day)'][best_index],
+                           ul=current_data['Sodium UL (mg/day)'][best_index]),
+        'zinc': Nutrient(unit="mg/day", rdi=current_data['Zinc RDI (mg/day)'][best_index],
+                         ul=current_data['Zinc UL (mg/day)'][best_index])
     }
 
 
@@ -259,19 +282,29 @@ def calculate_vitamins(human: Human, vitamin_data: dict):
     current_data = vitamin_data[human.sex]
     best_index = find_best_index(human.age, current_data['Age'])
     return {
-        'vitamin_a': Nutrient(unit="ug/day", rdi=current_data['Vitamin A RDI (ug/day)'][best_index], ul=current_data['Vitamin A UL (ug/day)'][best_index]),
+        'vitamin_a': Nutrient(unit="ug/day", rdi=current_data['Vitamin A RDI (ug/day)'][best_index],
+                              ul=current_data['Vitamin A UL (ug/day)'][best_index]),
         'thiamin': Nutrient(unit="mg/day", rdi=current_data['Thiamin RDI (mg/day)'][best_index]),
-        'riboflavin': Nutrient(unit="mg/day", rdi=current_data['Riboflavin RDI (mg/day)'][best_index]),
+        'riboflavin': Nutrient(unit="mg/day",
+                               rdi=current_data['Riboflavin RDI (mg/day)'][best_index]),
         'niacin': Nutrient(unit="mg/day", rdi=current_data['Niacin RDI (mg/day)'][best_index]),
-        'vitamin_b6': Nutrient(unit="mg/day", rdi=current_data['Vitamin B6 RDI (mg/day)'][best_index], ul=current_data['Vitamin B6 UL (mg/day)'][best_index]),
-        'vitamin_b12': Nutrient(unit="ug/day", rdi=current_data['Vitamin B12 RDI (ug/day)'][best_index]),
-        'folate': Nutrient(unit="ug/day", rdi=current_data['Folate RDI (ug/day)'][best_index], ul=current_data['Folate UL (ug/day)'][best_index]),
-        'pantothenic_acid': Nutrient(unit="mg/day", rdi=current_data['Pantothenic Acid RDI (mg/day)'][best_index]),
+        'vitamin_b6': Nutrient(unit="mg/day",
+                               rdi=current_data['Vitamin B6 RDI (mg/day)'][best_index],
+                               ul=current_data['Vitamin B6 UL (mg/day)'][best_index]),
+        'vitamin_b12': Nutrient(unit="ug/day",
+                                rdi=current_data['Vitamin B12 RDI (ug/day)'][best_index]),
+        'folate': Nutrient(unit="ug/day", rdi=current_data['Folate RDI (ug/day)'][best_index],
+                           ul=current_data['Folate UL (ug/day)'][best_index]),
+        'pantothenic_acid': Nutrient(unit="mg/day",
+                                     rdi=current_data['Pantothenic Acid RDI (mg/day)'][best_index]),
         'biotin': Nutrient(unit="ug/day", rdi=current_data['Biotin RDI (ug/day)'][best_index]),
         # 'choline': Nutrient(unit="mg/day", rdi=current_data['Choline RDI (mg/day)'][best_index], ul=current_data['Choline UL (mg/day)'][best_index]),
-        'vitamin_c': Nutrient(unit="mg/day", rdi=current_data['Vitamin C RDI (mg/day)'][best_index]),
-        'vitamin_d': Nutrient(unit="ug/day", rdi=current_data['Vitamin D RDI (ug/day)'][best_index], ul=current_data['Vitamin D UL (ug/day)'][best_index]),
-        'vitamin_e': Nutrient(unit="mg/day", rdi=current_data['Vitamin E RDI (mg/day)'][best_index], ul=current_data['Vitamin E UL (mg/day)'][best_index]),
+        'vitamin_c': Nutrient(unit="mg/day",
+                              rdi=current_data['Vitamin C RDI (mg/day)'][best_index]),
+        'vitamin_d': Nutrient(unit="ug/day", rdi=current_data['Vitamin D RDI (ug/day)'][best_index],
+                              ul=current_data['Vitamin D UL (ug/day)'][best_index]),
+        'vitamin_e': Nutrient(unit="mg/day", rdi=current_data['Vitamin E RDI (mg/day)'][best_index],
+                              ul=current_data['Vitamin E UL (mg/day)'][best_index]),
         # 'vitamin_k': Nutrient(unit="ug/day", rdi=current_data['Vitamin K RDI (ug/day)'][best_index])
     }
 
@@ -282,7 +315,7 @@ def nutrition_limits(human_model: Human, nutrient_data: dict) -> NutritionLevels
     output.protein = Nutrient(unit="g/day",
                               rdi=calculate_protein(human_model, nutrient_data['protein']))
     water_liquid, water_food = calculate_water(human_model, nutrient_data['water'])
-    #output.water_liquid = Nutrient(unit="L/day", rdi=water_liquid)
+    # output.water_liquid = Nutrient(unit="L/day", rdi=water_liquid)
     output.water_food = Nutrient(unit="g/day", rdi=water_food * 1000, ul=water_food * 2000)
     output.fibre = Nutrient(unit="g/day", rdi=calculate_fibre(human_model, nutrient_data['fibre']))
     # output.alinoleic = Nutrient(unit="g/day", rdi=calculate_alinoleic(human_model, nutrient_data['alinoleic']))

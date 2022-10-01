@@ -6,23 +6,27 @@ Contains a data structure containing a solved diet and other relevant meta data.
 
 import json
 from pydantic import BaseModel
-from src.dietary_limits.dietary_limits import Human, NutritionLevels
+from src.dietary_limits.dietary_limits import Human, NutritionLevels, Restriction
 
 
 class Diet(BaseModel):
     human: Human
     nutritionLevels: NutritionLevels
     foods: dict
+    nutrients: dict
     cost: float
     solve_time_ms: int
     solve_iterations: int
+    restriction: Restriction
 
     def _generate_filename(self) -> str:
-        return f"test"
+        return f"{self.human.age}-{self.human.sex}-{self.human.height}-{self.human.weight}-{self.human.activity}-{self.restriction}"
 
     def to_string(self) -> str:
-        dict_out = {'human': self.human.dict(), 'nutrition_levels': self.nutritionLevels.dict(),
-                    'foods': self.foods, 'cost': self.cost, 'solve_time_ms': self.solve_time_ms,
+        dict_out = {'human': self.human.dict(), 'restriction': self.restriction,
+                    'nutrition_levels': self.nutritionLevels.dict(),
+                    'foods': self.foods, 'cost': self.cost, 'nutrients': self.nutrients,
+                    'solve_time_ms': self.solve_time_ms,
                     'solve_iterations': self.solve_iterations}
         return json.dumps(dict_out, indent=4)
 

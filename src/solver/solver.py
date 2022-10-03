@@ -3,7 +3,7 @@ Solves the Stiegler diet problem with additional nutrition constraints and local
 
 @author Nicholas Pritchard nicholas.pritchard@uwa.edu.au
 """
-import json
+import os
 from ortools.linear_solver import pywraplp
 
 from src.dietary_limits.dietary_limits import initialize_data, Human, Sex, nutrition_limits, \
@@ -83,8 +83,9 @@ def main():
     limits_data = initialize_data()
     food_data = initialize_food_data()
     human = Human(age=25, sex=Sex.Male, height=1.83, weight=83.9, activity=1.0)
-    diet = solve(limits_data, food_data, human, 0.9)
+    diet = solve(limits_data, food_data, human, 1.2)
     out_dir = "../../results/"
+    os.makedirs(out_dir, exist_ok=True)
     diet.save_to_file(out_dir)
 
 

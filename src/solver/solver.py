@@ -8,7 +8,7 @@ from ortools.linear_solver import pywraplp
 
 from src.dietary_limits.dietary_limits import initialize_data, Human, Sex, nutrition_limits, \
     Restriction
-from src.dietary_limits.nutrition_values import initialize_food_data
+from src.dietary_limits.nutrition_values import initialize_food_data, initialize_liquid_data
 from src.solver.diet import Diet
 
 
@@ -82,6 +82,9 @@ def solve(limits_data, food_data, human: Human, upper_bound) -> Diet:
 def main():
     limits_data = initialize_data()
     food_data = initialize_food_data()
+    liquid_data = initialize_liquid_data()
+    for key, dataset in liquid_data.items():
+        food_data[key].extend(dataset)
     human = Human(age=25, sex=Sex.Male, height=1.83, weight=83.9, activity=1.0)
     diet = solve(limits_data, food_data, human, 1.2)
     out_dir = "../../results/"

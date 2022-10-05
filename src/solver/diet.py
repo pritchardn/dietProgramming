@@ -23,7 +23,9 @@ class Diet(BaseModel):
     restriction: Restriction
 
     def _generate_filename(self) -> str:
-        return f"{self.human.sex.name}-{self.human.age}-{self.human.height}-" \
+        return f"{self.human.sex.name}-{self.human.age}-" \
+               f"{round(self.human.weight/self.human.height**2, 1)}-" \
+               f"{round(self.human.height, 2)}-" \
                f"{round(self.human.weight, 2)}-{round(self.human.activity, 2)}-{self.restriction}"
 
     def to_string(self) -> str:

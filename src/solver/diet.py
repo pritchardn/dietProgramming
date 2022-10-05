@@ -4,9 +4,11 @@ Contains a data structure containing a solved diet and other relevant meta data.
 @author Nicholas Pritchard nicholas.pritchard@uwa.edu.au
 """
 
-import os
 import json
+import os
+
 from pydantic import BaseModel
+
 from src.dietary_limits.dietary_limits import Human, NutritionLevels, Restriction
 
 
@@ -21,7 +23,8 @@ class Diet(BaseModel):
     restriction: Restriction
 
     def _generate_filename(self) -> str:
-        return f"{self.human.age}-{self.human.sex}-{self.human.height}-{self.human.weight}-{self.human.activity}-{self.restriction}"
+        return f"{self.human.sex.name}-{self.human.age}-{self.human.height}-" \
+               f"{round(self.human.weight, 2)}-{round(self.human.activity, 2)}-{self.restriction}"
 
     def to_string(self) -> str:
         dict_out = {'human': self.human.dict(), 'restriction': self.restriction,
@@ -32,5 +35,6 @@ class Diet(BaseModel):
         return json.dumps(dict_out, indent=4)
 
     def save_to_file(self, filename: str):
-        with open(f"{filename}{os.sep}{self._generate_filename()}.out", 'w', encoding='utf-8') as ofile:
+        with open(f"{filename}{os.sep}{self._generate_filename()}.out", 'w',
+                  encoding='utf-8') as ofile:
             ofile.write(self.to_string())

@@ -4,6 +4,7 @@ Solves the Stiegler diet problem with additional nutrition constraints and local
 @author Nicholas Pritchard nicholas.pritchard@uwa.edu.au
 """
 import os
+
 from ortools.linear_solver import pywraplp
 
 from src.dietary_limits.dietary_limits import initialize_data, Human, Sex, nutrition_limits, \
@@ -20,7 +21,6 @@ def solve(limits_data, food_data, human: Human, upper_bound) -> Diet:
 
     # Create variables
     foods = [solver.NumVar(0.0, solver.infinity(), x) for x in food_data['name']]
-    print(f"Number of variables = {solver.NumVariables()}")
 
     # Add constraints
     constraints = []
@@ -32,8 +32,6 @@ def solve(limits_data, food_data, human: Human, upper_bound) -> Diet:
         for j, item in enumerate(food_data[nut_name]):
             constraints[i].SetCoefficient(foods[j], item)
         i += 1
-
-    print(f"Number of constraints = {solver.NumConstraints()}")
 
     # Objective function
     objective = solver.Objective()
@@ -54,7 +52,7 @@ def solve(limits_data, food_data, human: Human, upper_bound) -> Diet:
                         foods={},
                         nutrients={},
                         cost=0.0,
-                        solve_time_ms = 0.0,
+                        solve_time_ms=0.0,
                         solve_iterations=0,
                         restriction=Restriction.FULL)
 

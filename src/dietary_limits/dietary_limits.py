@@ -37,7 +37,7 @@ class Nutrient(BaseModel):
 class Human(BaseModel):
     age: int
     sex: Sex
-    height: int
+    height: float
     weight: float
     activity: float  # TODO: make enum 1.2-2.2
 

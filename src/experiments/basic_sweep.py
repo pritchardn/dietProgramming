@@ -18,7 +18,7 @@ def basic_sweep(limits_data, food_data, age_range, height_range, bmi_range, acti
             for bmi in bmi_range:
                 for activity in activity_range:
                     weight = round(bmi_solve(height, bmi), 2)
-                    print(f"{age}-{height}-{weight}")
+                    print(f"{age}-{round(height, 2)}-{round(weight, 2)}")
                     human = Human(age=age, sex=Sex.Male, height=height, weight=weight,
                                   activity=activity)
                     diet = solve(limits_data, food_data, human, 1.2)

@@ -1,32 +1,23 @@
-import numpy as np
+import glob
+import os
+
 import matplotlib.pyplot as plt
+from parse import *
+
+from src.dietary_limits.dietary_limits import Sex
 
 
-def plot(bmis, ages, activities):
+def plot(sex: Sex, bmis, ages, activities):
     fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-
-    x = []
-    y = []
-    z = []
-
-    for bmi in bmis:
-        for age in ages:
-            for activity in activities:
-                x.append(bmi)
-                y.append(age)
-                z.append(activity)
-
-    # Plot scatterplot data (20 2D points per colour) on the x and z axes.
+    ax = fig.add_subplot(projection='3d', title=f"{sex.name.title()} diet costs")
     colors = ('r', 'g', 'b', 'k')
 
     c_list = []
     for c in colors:
-        c_list.extend([c] * (len(x)//4))
-    # By using zdir='y', the y value of these points is fixed to the zs value 0
-    # and the (x, y) points are plotted on the x and z axes.
+        c_list.extend([c] * (len(bmis) // 4))
 
-    ax.scatter(x, y, z, c=c_list, marker='o', label='Cost of diets', alpha=0.1, linewidths=0.1)
+    ax.scatter(bmis, ages, activities, c=c_list, marker='o', label='Cost of diets', alpha=0.05,
+               linewidths=0.01)
     # Make legend, set axes limits and labels
     ax.legend()
     ax.set_xlabel('BMI')
@@ -40,8 +31,37 @@ def plot(bmis, ages, activities):
     plt.show()
 
 
+def filename_to_params(filename: str, sex: Sex) -> tuple[float, int, float]:
+    substr = filename[filename.find(sex.name):]
+    matches = parse(f"{sex.name}" + "-{}-{}-{}-{}-{}-{}.out", substr)
+    age = int(matches[0])
+    bmi = float(matches[1])
+    # height = float(matches[2])
+    # weight = float(matches[3])
+    activity = float(matches[4])
+    return bmi, age, activity
+
+
+def process_files(filenames: list) -> tuple[list, list, list, list]:
+    bmis, ages, activities, costs = [], [], [], []
+    for filename in filenames:
+        bmi, age, activity = filename_to_params(filename, Sex.Male)
+        bmis.append(bmi)
+        ages.append(age)
+        activities.append(activity)
+        costs.append(4)
+    return bmis, ages, activities, costs
+
+
 def main():
-    plot(np.arange(18, 35, 0.5), range(18, 85), np.arange(1.0, 2.0, 0.1))
+    data_path = "../../results"
+    male_files = glob.glob(f"{data_path}{os.sep}Male-*.out")
+    female_files = glob.glob(f"{data_path}{os.sep}Female-*.out")
+    print(len(male_files))
+    print(len(female_files))
+    bmis, ages, activities, costs = process_files(male_files)
+    print("Processed files")
+    plot(Sex.Male, bmis, ages, activities)
 
 
 if __name__ == "__main__":

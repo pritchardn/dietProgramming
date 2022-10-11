@@ -1,20 +1,26 @@
 import glob
+import json
 import os
 
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+from matplotlib.colors import Normalize, rgb2hex
 from parse import *
 
 from src.dietary_limits.dietary_limits import Sex
 
 
-def plot(sex: Sex, bmis, ages, activities):
+def plot(sex: Sex, bmis, ages, activities, costs):
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d', title=f"{sex.name.title()} diet costs")
-    colors = ('r', 'g', 'b', 'k')
-
+    cmap = cm.PiYG
+    norm = Normalize(vmin=min(costs), vmax=max(costs))
+    m = cm.ScalarMappable(norm=norm, cmap=cmap)
     c_list = []
-    for c in colors:
-        c_list.extend([c] * (len(bmis) // 4))
+    for cost in costs:
+        color = rgb2hex(m.to_rgba(cost))
+        c_list.append(color)
+    print("Color map built")
 
     ax.scatter(bmis, ages, activities, c=c_list, marker='o', label='Cost of diets', alpha=0.05,
                linewidths=0.01)
@@ -42,6 +48,12 @@ def filename_to_params(filename: str, sex: Sex) -> tuple[float, int, float]:
     return bmi, age, activity
 
 
+def get_diet_cost(filename: str) -> float:
+    with open(filename, 'r') as ifile:
+        data = json.load(ifile)
+        return data["cost"]
+
+
 def process_files(filenames: list) -> tuple[list, list, list, list]:
     bmis, ages, activities, costs = [], [], [], []
     for filename in filenames:
@@ -49,7 +61,7 @@ def process_files(filenames: list) -> tuple[list, list, list, list]:
         bmis.append(bmi)
         ages.append(age)
         activities.append(activity)
-        costs.append(4)
+        costs.append(get_diet_cost(filename))
     return bmis, ages, activities, costs
 
 
@@ -61,7 +73,7 @@ def main():
     print(len(female_files))
     bmis, ages, activities, costs = process_files(male_files)
     print("Processed files")
-    plot(Sex.Male, bmis, ages, activities)
+    plot(Sex.Male, bmis, ages, activities, costs)
 
 
 if __name__ == "__main__":

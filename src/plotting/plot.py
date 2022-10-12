@@ -5,16 +5,17 @@ import os
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from matplotlib.colors import Normalize, rgb2hex
+import matplotlib.colors as colors
 from parse import *
 
 from src.dietary_limits.dietary_limits import Sex
 
 
 def plot(sex: Sex, bmis, ages, activities, costs):
-    fig = plt.figure()
-    ax = fig.add_subplot(projection='3d', title=f"{sex.name.title()} diet costs")
-    cmap = cm.PiYG
-    norm = Normalize(vmin=min(costs), vmax=max(costs))
+    fig, (ax1, ax2) = plt.subplots(1, 2, subplot_kw={"projection": "3d"})
+    fig.suptitle(f"{sex.name.title()} diet costs")
+    cmap = cm.Pastel1
+    norm = colors.LogNorm(vmin=min(costs), vmax=max(costs))
     m = cm.ScalarMappable(norm=norm, cmap=cmap)
     c_list = []
     for cost in costs:
@@ -22,17 +23,26 @@ def plot(sex: Sex, bmis, ages, activities, costs):
         c_list.append(color)
     print("Color map built")
 
-    ax.scatter(bmis, ages, activities, c=c_list, marker='o', label='Cost of diets', alpha=0.05,
-               linewidths=0.01)
+    ax1.scatter(bmis, ages, activities, c=c_list, marker='.', label='Cost of diets', alpha=0.05, linewidths=0.5)
     # Make legend, set axes limits and labels
-    ax.legend()
-    ax.set_xlabel('BMI')
-    ax.set_ylabel('Age')
-    ax.set_zlabel('Activity')
+    ax1.set_xlabel('BMI')
+    ax1.set_ylabel('Age')
+    ax1.set_zlabel('Activity')
+    plt.gca().invert_xaxis()
+    #plt.gca().invert_yaxis()
+
+    ax2.scatter(bmis, ages, activities, c=c_list, marker='.', label='Cost of diets', alpha=0.05, linewidths=0.5)
+    # Make legend, set axes limits and labels
+    ax2.set_xlabel('BMI')
+    ax2.set_ylabel('Age')
+    ax2.set_zlabel('Activity')
+    plt.gca().invert_xaxis()
+    plt.gca().invert_yaxis()
 
     # Customize the view angle so it's easier to see that the scatter points lie
     # on the plane y=0
-    ax.view_init(elev=20., azim=-35, roll=0)
+    ax1.view_init(elev=20., azim=-35, roll=0)
+    ax2.view_init(elev=20., azim=-35, roll=0)
 
     plt.show()
 

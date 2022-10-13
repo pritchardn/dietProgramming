@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+from multiprocessing import Pool
 
 from src.dietary_limits.dietary_limits import initialize_data, Human, Sex
 from src.dietary_limits.nutrition_values import initialize_food_data, initialize_liquid_data
@@ -11,8 +12,18 @@ def bmi_solve(height, bmi_target):
     return height ** 2 * bmi_target
 
 
-def basic_sweep(limits_data, food_data, sex: Sex, age_range, height_range, bmi_range, activity_range,
-                out_dir):
+LIMITS_DATA = None
+FOOD_DATA = None
+OUT_DIR = ""
+
+
+def single_trial(human):
+    diet = solve(LIMITS_DATA, FOOD_DATA, human, 1.2)
+    diet.save_to_file(OUT_DIR)
+
+
+def basic_sweep(sex: Sex, age_range, height_range, bmi_range, activity_range):
+    people = []
     for age in age_range:
         for height in height_range:
             for bmi in bmi_range:
@@ -20,9 +31,9 @@ def basic_sweep(limits_data, food_data, sex: Sex, age_range, height_range, bmi_r
                     weight = round(bmi_solve(height, bmi), 2)
                     human = Human(age=age, sex=sex, height=height, weight=weight,
                                   activity=activity)
-                    diet = solve(limits_data, food_data, human, 1.2)
-                    diet.save_to_file(out_dir)
-        print(f"{age/len(age_range) * 100}%")
+                    people.append(human)
+    with Pool(16) as pool:
+        pool.map(single_trial, people)
 
 
 def main():
@@ -44,13 +55,18 @@ def main():
     out_dir = "../../results/"
     os.makedirs(out_dir, exist_ok=True)
 
+    global LIMITS_DATA
+    LIMITS_DATA = limits_data
+    global FOOD_DATA
+    FOOD_DATA = food_data
+    global OUT_DIR
+    OUT_DIR = out_dir
+
     for key, dataset in liquid_data.items():
         food_data[key].extend(dataset)
 
-    basic_sweep(limits_data, food_data, Sex.Male, age_range, male_height_range, bmi_range, activity_range,
-                out_dir)
-    basic_sweep(limits_data, food_data, Sex.Female, female_height_range, bmi_range, activity_range,
-                out_dir)
+    basic_sweep(Sex.Male, age_range, male_height_range, bmi_range, activity_range)
+    basic_sweep(Sex.Female, age_range, female_height_range, bmi_range, activity_range)
 
 
 if __name__ == "__main__":

@@ -32,7 +32,7 @@ def basic_sweep(sex: Sex, age_range, height_range, bmi_range, activity_range):
                     human = Human(age=age, sex=sex, height=height, weight=weight,
                                   activity=activity)
                     people.append(human)
-    with Pool(16) as pool:
+    with Pool(os.cpu_count()) as pool:
         pool.map(single_trial, people)
 
 

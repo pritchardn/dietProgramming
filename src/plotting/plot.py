@@ -4,7 +4,7 @@ import os
 
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-from matplotlib.colors import Normalize, rgb2hex
+from matplotlib.colors import rgb2hex
 import matplotlib.colors as colors
 from parse import *
 
@@ -14,7 +14,7 @@ from src.dietary_limits.dietary_limits import Sex
 def plot(sex: Sex, bmis, ages, activities, costs):
     fig, (ax1, ax2) = plt.subplots(1, 2, subplot_kw={"projection": "3d"})
     fig.suptitle(f"{sex.name.title()} diet costs")
-    cmap = cm.Pastel1
+    cmap = cm.plasma
     norm = colors.LogNorm(vmin=min(costs), vmax=max(costs))
     m = cm.ScalarMappable(norm=norm, cmap=cmap)
     c_list = []
@@ -64,10 +64,10 @@ def get_diet_cost(filename: str) -> float:
         return data["cost"]
 
 
-def process_files(filenames: list) -> tuple[list, list, list, list]:
+def process_files(filenames: list, sex:Sex) -> tuple[list, list, list, list]:
     bmis, ages, activities, costs = [], [], [], []
     for filename in filenames:
-        bmi, age, activity = filename_to_params(filename, Sex.Male)
+        bmi, age, activity = filename_to_params(filename, sex)
         bmis.append(bmi)
         ages.append(age)
         activities.append(activity)
@@ -81,9 +81,11 @@ def main():
     female_files = glob.glob(f"{data_path}{os.sep}Female-*.out")
     print(len(male_files))
     print(len(female_files))
-    bmis, ages, activities, costs = process_files(male_files)
+    bmis_m, ages_m, activities_m, costs_m = process_files(male_files, Sex.Male)
+    bmis_f, ages_f, activities_f, costs_f = process_files(female_files, Sex.Female)
     print("Processed files")
-    plot(Sex.Male, bmis, ages, activities, costs)
+    plot(Sex.Male, bmis_m, ages_m, activities_m, costs_m)
+    plot(Sex.Female, bmis_f, ages_f, activities_f, costs_f)
 
 
 if __name__ == "__main__":

@@ -2,6 +2,8 @@ import glob
 import json
 import os
 
+import matplotlib
+matplotlib.rcParams['figure.dpi'] = 600
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from matplotlib.colors import rgb2hex
@@ -11,11 +13,11 @@ from parse import *
 from src.dietary_limits.dietary_limits import Sex
 
 
-def plot(sex: Sex, bmis, ages, activities, costs):
+def plot(sex: Sex, bmis, ages, activities, costs, whole_min, whole_max):
     fig, (ax1, ax2) = plt.subplots(1, 2, subplot_kw={"projection": "3d"})
     fig.suptitle(f"{sex.name.title()} diet costs")
     cmap = cm.plasma
-    norm = colors.LogNorm(vmin=min(costs), vmax=max(costs))
+    norm = colors.Normalize(vmin=whole_min, vmax=whole_max)
     m = cm.ScalarMappable(norm=norm, cmap=cmap)
     c_list = []
     for cost in costs:
@@ -43,6 +45,10 @@ def plot(sex: Sex, bmis, ages, activities, costs):
     # on the plane y=0
     ax1.view_init(elev=20., azim=-35, roll=0)
     ax2.view_init(elev=20., azim=-35, roll=0)
+    cbar_formatter = matplotlib.ticker.ScalarFormatter()
+    cbar_formatter.set_scientific(False)
+    cbar_formatter.set_useOffset(False)
+    fig.colorbar(m, ax=[ax1, ax2], location='bottom', orientation='horizontal', format=cbar_formatter)
 
     plt.show()
 
@@ -83,9 +89,12 @@ def main():
     print(len(female_files))
     bmis_m, ages_m, activities_m, costs_m = process_files(male_files, Sex.Male)
     bmis_f, ages_f, activities_f, costs_f = process_files(female_files, Sex.Female)
+    whole_min = min([min(costs_m), min(costs_f)])
+    whole_max = max([max(costs_m), max(costs_f)])
+
     print("Processed files")
-    plot(Sex.Male, bmis_m, ages_m, activities_m, costs_m)
-    plot(Sex.Female, bmis_f, ages_f, activities_f, costs_f)
+    plot(Sex.Male, bmis_m, ages_m, activities_m, costs_m, whole_min, whole_max)
+    plot(Sex.Female, bmis_f, ages_f, activities_f, costs_f, whole_min, whole_max)
 
 
 if __name__ == "__main__":

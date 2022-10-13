@@ -11,18 +11,18 @@ def bmi_solve(height, bmi_target):
     return height ** 2 * bmi_target
 
 
-def basic_sweep(limits_data, food_data, age_range, height_range, bmi_range, activity_range,
+def basic_sweep(limits_data, food_data, sex: Sex, age_range, height_range, bmi_range, activity_range,
                 out_dir):
     for age in age_range:
         for height in height_range:
             for bmi in bmi_range:
                 for activity in activity_range:
                     weight = round(bmi_solve(height, bmi), 2)
-                    print(f"{age}-{round(height, 2)}-{round(weight, 2)}")
-                    human = Human(age=age, sex=Sex.Male, height=height, weight=weight,
+                    human = Human(age=age, sex=sex, height=height, weight=weight,
                                   activity=activity)
                     diet = solve(limits_data, food_data, human, 1.2)
                     diet.save_to_file(out_dir)
+        print(f"{age/len(age_range) * 100}%")
 
 
 def main():
@@ -47,9 +47,9 @@ def main():
     for key, dataset in liquid_data.items():
         food_data[key].extend(dataset)
 
-    basic_sweep(limits_data, food_data, age_range, male_height_range, bmi_range, activity_range,
+    basic_sweep(limits_data, food_data, Sex.Male, age_range, male_height_range, bmi_range, activity_range,
                 out_dir)
-    basic_sweep(limits_data, food_data, age_range, female_height_range, bmi_range, activity_range,
+    basic_sweep(limits_data, food_data, Sex.Female, female_height_range, bmi_range, activity_range,
                 out_dir)
 
 

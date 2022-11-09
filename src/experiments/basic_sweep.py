@@ -1,9 +1,10 @@
+import enum
 import os
 
 import numpy as np
 from multiprocessing import Pool
 
-from src.dietary_limits.dietary_limits import initialize_data, Human, Sex
+from src.dietary_limits.dietary_limits import initialize_data, Human, Sex, Restriction
 from src.dietary_limits.nutrition_values import initialize_food_data, initialize_liquid_data
 from src.solver.solver import solve
 
@@ -22,7 +23,7 @@ def single_trial(human):
     diet.save_to_file(OUT_DIR)
 
 
-def basic_sweep(sex: Sex, age_range, height_range, bmi_range, activity_range):
+def basic_sweep(sex: Sex, age_range, height_range, bmi_range, activity_range, restriction):
     people = []
     for age in age_range:
         for height in height_range:
@@ -30,13 +31,13 @@ def basic_sweep(sex: Sex, age_range, height_range, bmi_range, activity_range):
                 for activity in activity_range:
                     weight = round(bmi_solve(height, bmi), 2)
                     human = Human(age=age, sex=sex, height=height, weight=weight,
-                                  activity=activity)
+                                  activity=activity, restriction=restriction)
                     people.append(human)
     with Pool(os.cpu_count()) as pool:
         pool.map(single_trial, people)
 
 
-def main():
+def main(restriction: Restriction):
     male_height_range = np.arange(1.63, 1.93, 0.05)
     female_height_range = np.arange(1.5, 1.79, 0.05)
     bmi_range = np.arange(18.5, 30.0, 0.5)
@@ -48,11 +49,10 @@ def main():
     female_trials = num_trials_int * len(female_height_range)
     num_total_trials = male_trials + female_trials
     print(num_total_trials)
-
     limits_data = initialize_data()
-    food_data = initialize_food_data()
-    liquid_data = initialize_liquid_data()
-    out_dir = "../../results/"
+    food_data = initialize_food_data(restriction)
+    liquid_data = initialize_liquid_data(restriction)
+    out_dir = f"../../results/{restriction.name}"
     os.makedirs(out_dir, exist_ok=True)
 
     global LIMITS_DATA
@@ -65,9 +65,11 @@ def main():
     for key, dataset in liquid_data.items():
         food_data[key].extend(dataset)
 
-    basic_sweep(Sex.Male, age_range, male_height_range, bmi_range, activity_range)
-    basic_sweep(Sex.Female, age_range, female_height_range, bmi_range, activity_range)
+    basic_sweep(Sex.Male, age_range, male_height_range, bmi_range, activity_range, restriction)
+    basic_sweep(Sex.Female, age_range, female_height_range, bmi_range, activity_range, restriction)
 
 
 if __name__ == "__main__":
-    main()
+    for restriction in Restriction:
+        print(restriction)
+        main(restriction=Restriction(restriction))

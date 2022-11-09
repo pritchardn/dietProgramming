@@ -24,8 +24,19 @@ class Restriction(str, enum.Enum):
     FULL = 0
     VEGETARIAN = 1
     VEGAN = 2
-    GLUTEN = 3
+    # GLUTEN = 3
     NUTS = 4
+
+
+def restricted_foods(restriction: Restriction):
+    restricted_food_groups = []
+    if restriction == Restriction.VEGETARIAN:
+        restricted_food_groups.extend(['15', '18', '34'])
+    elif restriction == Restriction.VEGAN:
+        restricted_food_groups.extend(['13', '15', '17', '18', '19', '281', '284', '34'])
+    elif restriction == Restriction.NUTS:
+        restricted_food_groups.extend(['222'])
+    return restricted_food_groups
 
 
 class Nutrient(BaseModel):

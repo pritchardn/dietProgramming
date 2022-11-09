@@ -7,7 +7,7 @@ Loads nutrition data into a list.
 import pandas as pd
 from pydantic import BaseModel
 
-from src.dietary_limits.dietary_limits import NutritionLevels
+from src.dietary_limits.dietary_limits import NutritionLevels, Restriction, restricted_foods
 
 
 class Food(BaseModel):
@@ -17,7 +17,8 @@ class Food(BaseModel):
 
 
 def data_columns():
-    return ['Food Name', 'Price ($/100g)', 'Energy with dietary fibre, equated (kJ)',
+    return ['Classification', 'Food Name', 'Price ($/100g)',
+            'Energy with dietary fibre, equated (kJ)',
             'Moisture (water) (g)', 'Protein (g)', 'Fat, total (g)',
             'Total dietary fibre (g)', 'Total long chain omega 3 fatty acids, equated (mg)',
             'Vitamin A retinol equivalents (ug)',
@@ -34,7 +35,8 @@ def data_columns():
 
 
 def edited_columns():
-    return ['name', 'price', 'energy', 'water_food', 'protein', 'fat', 'fibre', 'n3fat',
+    return ['classification', 'name', 'price', 'energy', 'water_food', 'protein', 'fat', 'fibre',
+            'n3fat',
             'vitamin_a', 'thiamin', 'riboflavin', 'niacin', 'vitamin_b6',
             'vitamin_b12', 'folate', 'pantothenic_acid', 'biotin', 'vitamin_c',
             'vitamin_d', 'vitamin_e', 'calcium',
@@ -43,7 +45,14 @@ def edited_columns():
             'molybdenum', 'phosphorus', 'potassium', 'selenium', 'sodium', 'zinc']
 
 
-def reduce_data(filename: str):
+def filter_foods(data: pd.DataFrame, restriction: Restriction):
+    restricted_food = restricted_foods(restriction)
+    for food_group in restricted_food:
+        data = data[data['classification'].str.startswith(food_group) == False]
+    return data
+
+
+def reduce_data(filename: str, restriction: Restriction):
     data = pd.read_csv(filename)
     columns = data_columns()
     data = data[columns]
@@ -51,17 +60,20 @@ def reduce_data(filename: str):
     data.columns = new_columns
     data.replace('', 0.0, inplace=True)
     data.replace(float('nan'), 0.0, inplace=True)
+    data['classification'] = data['classification'].astype(int)
+    data['classification'] = data['classification'].astype(str)
+    data = filter_foods(data, restriction)
     return data.to_dict('list')
 
 
-def initialize_food_data():
-    return reduce_data('../../data/nutrients-solid.csv')
+def initialize_food_data(restriction: Restriction):
+    return reduce_data('../../data/nutrients-solid.csv', restriction)
 
 
-def initialize_liquid_data():
-    return reduce_data('../../data/nutrients-liquid.csv')
+def initialize_liquid_data(restriction: Restriction):
+    return reduce_data('../../data/nutrients-liquid.csv', restriction)
 
 
 if __name__ == "__main__":
-    food_data = initialize_food_data()
-    liquid_data = initialize_liquid_data()
+    food_data = initialize_food_data(Restriction.FULL)
+    liquid_data = initialize_liquid_data(Restriction.FULL)

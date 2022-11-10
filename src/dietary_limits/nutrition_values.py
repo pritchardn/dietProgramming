@@ -20,7 +20,8 @@ def data_columns():
     return ['Classification', 'Food Name', 'Price ($/100g)',
             'Energy with dietary fibre, equated (kJ)',
             'Moisture (water) (g)', 'Protein (g)', 'Fat, total (g)',
-            'Total dietary fibre (g)', 'Total long chain omega 3 fatty acids, equated (mg)',
+            'Total dietary fibre (g)', 'Lactose (g)',
+            'Total long chain omega 3 fatty acids, equated (mg)',
             'Vitamin A retinol equivalents (ug)',
             'Thiamin (B1) (mg)', 'Riboflavin (B2) (mg)',
             'Niacin derived equivalents (mg)', 'Pyridoxine (B6) (mg)',
@@ -36,7 +37,7 @@ def data_columns():
 
 def edited_columns():
     return ['classification', 'name', 'price', 'energy', 'water_food', 'protein', 'fat', 'fibre',
-            'n3fat',
+            'lactose', 'n3fat',
             'vitamin_a', 'thiamin', 'riboflavin', 'niacin', 'vitamin_b6',
             'vitamin_b12', 'folate', 'pantothenic_acid', 'biotin', 'vitamin_c',
             'vitamin_d', 'vitamin_e', 'calcium',
@@ -49,6 +50,8 @@ def filter_foods(data: pd.DataFrame, restriction: Restriction):
     restricted_food = restricted_foods(restriction)
     for food_group in restricted_food:
         data = data[data['classification'].str.startswith(food_group) == False]
+    if restriction == Restriction.LACTOSE:
+        data = data[data['lactose'] == 0.0]
     return data
 
 

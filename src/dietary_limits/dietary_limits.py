@@ -25,6 +25,7 @@ class Restriction(str, enum.Enum):
     VEGETARIAN = 1
     VEGAN = 2
     # GLUTEN = 3
+    LACTOSE = 3
     NUTS = 4
 
 

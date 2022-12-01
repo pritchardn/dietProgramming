@@ -135,7 +135,7 @@ def main():
     activities = [1.0, 1.5, 2.0]
     for restriction in Restriction:
         restriction = Restriction(restriction)
-        data_path = f"../../results/{Restriction.FULL.name}"
+        data_path = f"../../results/{restriction.name}"
         for age in ages:
             plot_costs_m = []
             plot_costs_f = []
@@ -143,9 +143,9 @@ def main():
             for bmi in bmis:
                 for activity in activities:
                     male_files = glob.glob(
-                        f"{data_path}{os.sep}Male-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-{Restriction.FULL}.out")
+                        f"{data_path}{os.sep}Male-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-*.out")
                     female_files = glob.glob(
-                        f"{data_path}{os.sep}Female-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-{Restriction.FULL}.out")
+                        f"{data_path}{os.sep}Female-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-*.out")
                     bmis_m, ages_m, activities_m, costs_m = process_files(male_files, Sex.Male)
                     bmis_f, ages_f, activities_f, costs_f = process_files(female_files, Sex.Female)
                     plot_costs_m.append(np.mean(costs_m))

@@ -54,7 +54,6 @@ def plot(sex: Sex, bmis, ages, activities, costs, whole_min, whole_max, restrict
     cbar_formatter.set_useOffset(False)
     fig.colorbar(m, ax=[ax1, ax2], location='bottom', orientation='horizontal',
                  format=cbar_formatter)
-    plt.tight_layout()
     plt.show()
 
 
@@ -151,8 +150,6 @@ def main():
                     bmis_f, ages_f, activities_f, costs_f = process_files(female_files, Sex.Female)
                     plot_costs_m.append(np.mean(costs_m))
                     plot_costs_f.append(np.mean(costs_f))
-                    print(f"{age}-{bmi}-{activity}-{plot_costs_m[-1]}")
-                    print(f"{age}-{bmi}-{activity}-{plot_costs_f[-1]}")
                     labels.append(f"{bmi}\n{activity}")
             plot_restrictions(age, restriction, labels, plot_costs_f, plot_costs_m)
 

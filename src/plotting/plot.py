@@ -1,9 +1,9 @@
 import glob
 import json
 import os
-import numpy as np
 
 import matplotlib
+import numpy as np
 
 matplotlib.rcParams['figure.dpi'] = 600
 import matplotlib.pyplot as plt
@@ -68,6 +68,22 @@ def plot_activities(age: int, restriction: Restriction, x_labels: list, costs_f:
     plt.title(f"Age: {age} Diet: {restriction.name}")
     plt.ylabel("Cost ($)")
     plt.xlabel("BMI & Activity")
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_restrictions(age: int, bmi: float, activity: float, x_labels: list, costs_f: list,
+                      costs_m: list):
+    plt.clf()
+    x_vals = np.arange(len(x_labels))
+    width = 0.4
+    plt.bar(x_vals, costs_f, width=width, label="Female")
+    plt.bar(x_vals + width, costs_m, width=width, label="Male")
+    plt.xticks(x_vals + width / 2, x_labels)
+    plt.title(f"Age: {age} BMI: {bmi} Activity: {activity}")
+    plt.ylabel("Cost ($)")
+    plt.xlabel("Diet type")
     plt.legend()
     plt.tight_layout()
     plt.show()
@@ -152,6 +168,26 @@ def main():
                     plot_costs_f.append(np.mean(costs_f))
                     labels.append(f"{bmi}\n{activity}")
             plot_activities(age, restriction, labels, plot_costs_f, plot_costs_m)
+
+    for age in ages:
+        for bmi in bmis:
+            for activity in activities:
+                plot_costs_m = []
+                plot_costs_f = []
+                labels = []
+                for restriction in Restriction:
+                    restriction = Restriction(restriction)
+                    data_path = f"../../results/{restriction.name}"
+                    male_files = glob.glob(
+                        f"{data_path}{os.sep}Male-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-*.out")
+                    female_files = glob.glob(
+                        f"{data_path}{os.sep}Female-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-*.out")
+                    bmis_m, ages_m, activities_m, costs_m = process_files(male_files, Sex.Male)
+                    bmis_f, ages_f, activities_f, costs_f = process_files(female_files, Sex.Female)
+                    plot_costs_m.append(np.mean(costs_m))
+                    plot_costs_f.append(np.mean(costs_f))
+                    labels.append(f"{restriction.name}")
+                plot_restrictions(age, bmi, activity, labels, plot_costs_f, plot_costs_m)
 
 
 if __name__ == "__main__":

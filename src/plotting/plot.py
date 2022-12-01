@@ -57,8 +57,8 @@ def plot(sex: Sex, bmis, ages, activities, costs, whole_min, whole_max, restrict
     plt.show()
 
 
-def plot_restrictions(age: int, restriction: Restriction, x_labels: list, costs_f: list,
-                      costs_m: list):
+def plot_activities(age: int, restriction: Restriction, x_labels: list, costs_f: list,
+                    costs_m: list):
     plt.clf()
     x_vals = np.arange(len(x_labels))
     width = 0.4
@@ -151,7 +151,7 @@ def main():
                     plot_costs_m.append(np.mean(costs_m))
                     plot_costs_f.append(np.mean(costs_f))
                     labels.append(f"{bmi}\n{activity}")
-            plot_restrictions(age, restriction, labels, plot_costs_f, plot_costs_m)
+            plot_activities(age, restriction, labels, plot_costs_f, plot_costs_m)
 
 
 if __name__ == "__main__":

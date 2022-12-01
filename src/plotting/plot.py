@@ -54,7 +54,7 @@ def plot(sex: Sex, bmis, ages, activities, costs, whole_min, whole_max, restrict
     cbar_formatter.set_useOffset(False)
     fig.colorbar(m, ax=[ax1, ax2], location='bottom', orientation='horizontal',
                  format=cbar_formatter)
-    plt.show()
+    plt.savefig(f"cost-cloud-{sex.name}-{restriction}.png")
 
 
 def plot_activities(age: int, restriction: Restriction, x_labels: list, costs_f: list,
@@ -70,7 +70,7 @@ def plot_activities(age: int, restriction: Restriction, x_labels: list, costs_f:
     plt.xlabel("BMI & Activity")
     plt.legend()
     plt.tight_layout()
-    plt.show()
+    plt.savefig(f"activities-{age}-{restriction}.png")
 
 
 def plot_restrictions(age: int, bmi: float, activity: float, x_labels: list, costs_f: list,
@@ -86,7 +86,7 @@ def plot_restrictions(age: int, bmi: float, activity: float, x_labels: list, cos
     plt.xlabel("Diet type")
     plt.legend()
     plt.tight_layout()
-    plt.show()
+    plt.savefig(f"restrictions-{age}-{bmi}-{activity}.png")
 
 
 def filename_to_params(filename: str, sex: Sex) -> tuple[float, int, float]:

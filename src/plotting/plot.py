@@ -1,8 +1,10 @@
 import glob
 import json
 import os
+import numpy as np
 
 import matplotlib
+
 matplotlib.rcParams['figure.dpi'] = 600
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -25,15 +27,17 @@ def plot(sex: Sex, bmis, ages, activities, costs, whole_min, whole_max, restrict
         c_list.append(color)
     print("Color map built")
 
-    ax1.scatter(bmis, ages, activities, c=c_list, marker='.', label='Cost of diets', alpha=0.05, linewidths=0.5)
+    ax1.scatter(bmis, ages, activities, c=c_list, marker='.', label='Cost of diets', alpha=0.05,
+                linewidths=0.5)
     # Make legend, set axes limits and labels
     ax1.set_xlabel('BMI')
     ax1.set_ylabel('Age')
     ax1.set_zlabel('Activity')
     plt.gca().invert_xaxis()
-    #plt.gca().invert_yaxis()
+    # plt.gca().invert_yaxis()
 
-    ax2.scatter(bmis, ages, activities, c=c_list, marker='.', label='Cost of diets', alpha=0.05, linewidths=0.5)
+    ax2.scatter(bmis, ages, activities, c=c_list, marker='.', label='Cost of diets', alpha=0.05,
+                linewidths=0.5)
     # Make legend, set axes limits and labels
     ax2.set_xlabel('BMI')
     ax2.set_ylabel('Age')
@@ -48,8 +52,25 @@ def plot(sex: Sex, bmis, ages, activities, costs, whole_min, whole_max, restrict
     cbar_formatter = matplotlib.ticker.ScalarFormatter()
     cbar_formatter.set_scientific(False)
     cbar_formatter.set_useOffset(False)
-    fig.colorbar(m, ax=[ax1, ax2], location='bottom', orientation='horizontal', format=cbar_formatter)
+    fig.colorbar(m, ax=[ax1, ax2], location='bottom', orientation='horizontal',
+                 format=cbar_formatter)
+    plt.tight_layout()
+    plt.show()
 
+
+def plot_restrictions(age: int, restriction: Restriction, x_labels: list, costs_f: list,
+                      costs_m: list):
+    plt.clf()
+    x_vals = np.arange(len(x_labels))
+    width = 0.4
+    plt.bar(x_vals, costs_f, width=width, label="Female")
+    plt.bar(x_vals + width, costs_m, width=width, label="Male")
+    plt.xticks(x_vals + width / 2, x_labels)
+    plt.title(f"Age: {age} Diet: {restriction.name}")
+    plt.ylabel("Cost ($)")
+    plt.xlabel("BMI & Activity")
+    plt.legend()
+    plt.tight_layout()
     plt.show()
 
 
@@ -70,7 +91,7 @@ def get_diet_cost(filename: str) -> float:
         return data["cost"]
 
 
-def process_files(filenames: list, sex:Sex) -> tuple[list, list, list, list]:
+def process_files(filenames: list, sex: Sex) -> tuple[list, list, list, list]:
     bmis, ages, activities, costs = [], [], [], []
     for filename in filenames:
         cost = get_diet_cost(filename)
@@ -85,6 +106,7 @@ def process_files(filenames: list, sex:Sex) -> tuple[list, list, list, list]:
 
 
 def main():
+    plotting_data = {}
     for restriction in Restriction:
         restriction = Restriction(restriction)
         data_path = f"../../results/{restriction.name}"
@@ -94,12 +116,45 @@ def main():
         print(len(female_files))
         bmis_m, ages_m, activities_m, costs_m = process_files(male_files, Sex.Male)
         bmis_f, ages_f, activities_f, costs_f = process_files(female_files, Sex.Female)
+        plotting_data[restriction] = {"male": (bmis_m, ages_m, activities_m, costs_m),
+                                      "female": (bmis_f, ages_f, activities_f, costs_f)}
+        print("Processed files")
+
+    for restriction in Restriction:
+        restriction = Restriction(restriction)
+        bmis_m, ages_m, activities_m, costs_m = plotting_data[restriction]["male"]
+        bmis_f, ages_f, activities_f, costs_f = plotting_data[restriction]["female"]
         whole_min = min([min(costs_m), min(costs_f)])
         whole_max = max([max(costs_m), max(costs_f)])
+        plot(Sex.Male, bmis_m, ages_m, activities_m, costs_m, whole_min, whole_max,
+             restriction.name)
+        plot(Sex.Female, bmis_f, ages_f, activities_f, costs_f, whole_min, whole_max,
+             restriction.name)
 
-        print("Processed files")
-        plot(Sex.Male, bmis_m, ages_m, activities_m, costs_m, whole_min, whole_max, restriction.name)
-        plot(Sex.Female, bmis_f, ages_f, activities_f, costs_f, whole_min, whole_max, restriction.name)
+    ages = [20, 50, 80]
+    bmis = [18.5, 22.0, 30.0]
+    activities = [1.0, 1.5, 2.0]
+    for restriction in Restriction:
+        restriction = Restriction(restriction)
+        data_path = f"../../results/{Restriction.FULL.name}"
+        for age in ages:
+            plot_costs_m = []
+            plot_costs_f = []
+            labels = []
+            for bmi in bmis:
+                for activity in activities:
+                    male_files = glob.glob(
+                        f"{data_path}{os.sep}Male-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-{Restriction.FULL}.out")
+                    female_files = glob.glob(
+                        f"{data_path}{os.sep}Female-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-{Restriction.FULL}.out")
+                    bmis_m, ages_m, activities_m, costs_m = process_files(male_files, Sex.Male)
+                    bmis_f, ages_f, activities_f, costs_f = process_files(female_files, Sex.Female)
+                    plot_costs_m.append(np.mean(costs_m))
+                    plot_costs_f.append(np.mean(costs_f))
+                    print(f"{age}-{bmi}-{activity}-{plot_costs_m[-1]}")
+                    print(f"{age}-{bmi}-{activity}-{plot_costs_f[-1]}")
+                    labels.append(f"{bmi}\n{activity}")
+            plot_restrictions(age, restriction, labels, plot_costs_f, plot_costs_m)
 
 
 if __name__ == "__main__":

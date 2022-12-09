@@ -194,16 +194,24 @@ def calculate_energy(human: Human):
     """
     Uses the IOM equations to estimate EER
     Institute of Medicine Equation. (2022, March 27). In Wikipedia. https://en.wikipedia.org/wiki/Institute_of_Medicine_Equation
+    Elderly energy values assisted by https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7912404/
+    Adjusted to use the Mifflin and St Jeor formula for those older than 65
+    https://en.wikipedia.org/wiki/Harris%E2%80%93Benedict_equation
     :param human: mass (kg), height (m), age (years), sex and activity level are of interest
     :return: EER (MJ)
     """
-    if human.age >= 19:
+    if 19 <= human.age < 65:
         if human.sex == Sex.Male:
             output = 662 - (9.53 * human.age) + human.activity * (
                     (15.91 * human.weight) + (539.6 * human.height))
         else:
             output = 354 - (6.91 * human.age) + human.activity * (
                     (9.36 * human.weight) + (726 * human.height))
+    elif human.age >= 65:
+        if human.sex == Sex.Male:
+            output = (10 * human.weight) + (6.25 * human.height * 100) - (5 * human.age) + 5
+        else:
+            output = (10 * human.weight) + (6.25 * human.height * 100) - (5 * human.age) - 161
     else:
         if human.sex == Sex.Male:
             output = 88.5 - (61.9 * human.age) + human.activity * (
@@ -370,7 +378,7 @@ def nutrition_limits(human_model: Human, nutrient_data: dict) -> NutritionLevels
 
 if __name__ == "__main__":
     data = initialize_data()
-    test_human = Human(age=25, sex=Sex.Male, height=1.83, weight=83.9, activity=1.2)
+    test_human = Human(age=80, sex=Sex.Male, height=1.73, weight=88.29, activity=2.0)
     # test_human = Human(age=12, sex=Sex.Male, height=1.2, weight=46, activity=1.2)
     # test_human = Human(age=25, sex=Sex.Female, height=1.73, weight=83.9, activity=1.2)
     # test_human = Human(age=12, sex=Sex.Female, height=1.10, weight=40, activity=1.2)

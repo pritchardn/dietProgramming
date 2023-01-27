@@ -125,12 +125,12 @@ def main():
     for restriction in Restriction:
         restriction = Restriction(restriction)
         data_path = f"../../results/{restriction.name}"
-        male_files = glob.glob(f"{data_path}{os.sep}Male-*.out")
-        female_files = glob.glob(f"{data_path}{os.sep}Female-*.out")
+        male_files = glob.glob(f"{data_path}{os.sep}MALE-*.out")
+        female_files = glob.glob(f"{data_path}{os.sep}FEMALE-*.out")
         print(len(male_files))
         print(len(female_files))
-        bmis_m, ages_m, activities_m, costs_m = process_files(male_files, Sex.Male)
-        bmis_f, ages_f, activities_f, costs_f = process_files(female_files, Sex.Female)
+        bmis_m, ages_m, activities_m, costs_m = process_files(male_files, Sex.MALE)
+        bmis_f, ages_f, activities_f, costs_f = process_files(female_files, Sex.FEMALE)
         plotting_data[restriction] = {"male": (bmis_m, ages_m, activities_m, costs_m),
                                       "female": (bmis_f, ages_f, activities_f, costs_f)}
         print("Processed files")
@@ -145,9 +145,9 @@ def main():
         max_female = max(costs_f)
         # whole_min = min([min(costs_m), min(costs_f)])
         # whole_max = max([max(costs_m), max(costs_f)])
-        plot(Sex.Male, bmis_m, ages_m, activities_m, costs_m, min_male, max_male,
+        plot(Sex.MALE, bmis_m, ages_m, activities_m, costs_m, min_male, max_male,
              restriction.name)
-        plot(Sex.Female, bmis_f, ages_f, activities_f, costs_f, min_female, max_female,
+        plot(Sex.FEMALE, bmis_f, ages_f, activities_f, costs_f, min_female, max_female,
              restriction.name)
 
     ages = [20, 50, 80]
@@ -163,11 +163,11 @@ def main():
             for bmi in bmis:
                 for activity in activities:
                     male_files = glob.glob(
-                        f"{data_path}{os.sep}Male-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-*.out")
+                        f"{data_path}{os.sep}MALE-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-*.out")
                     female_files = glob.glob(
-                        f"{data_path}{os.sep}Female-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-*.out")
-                    bmis_m, ages_m, activities_m, costs_m = process_files(male_files, Sex.Male)
-                    bmis_f, ages_f, activities_f, costs_f = process_files(female_files, Sex.Female)
+                        f"{data_path}{os.sep}FEMALE-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-*.out")
+                    bmis_m, ages_m, activities_m, costs_m = process_files(male_files, Sex.MALE)
+                    bmis_f, ages_f, activities_f, costs_f = process_files(female_files, Sex.FEMALE)
                     plot_costs_m.append(np.mean(costs_m))
                     plot_costs_f.append(np.mean(costs_f))
                     labels.append(f"{bmi}\n{activity}")
@@ -183,11 +183,11 @@ def main():
                     restriction = Restriction(restriction)
                     data_path = f"../../results/{restriction.name}"
                     male_files = glob.glob(
-                        f"{data_path}{os.sep}Male-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-*.out")
+                        f"{data_path}{os.sep}MALE-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-*.out")
                     female_files = glob.glob(
-                        f"{data_path}{os.sep}Female-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-*.out")
-                    bmis_m, ages_m, activities_m, costs_m = process_files(male_files, Sex.Male)
-                    bmis_f, ages_f, activities_f, costs_f = process_files(female_files, Sex.Female)
+                        f"{data_path}{os.sep}FEMALE-{age}-{round(bmi, 1)}-*-{round(activity, 2)}-*.out")
+                    bmis_m, ages_m, activities_m, costs_m = process_files(male_files, Sex.MALE)
+                    bmis_f, ages_f, activities_f, costs_f = process_files(female_files, Sex.FEMALE)
                     plot_costs_m.append(np.mean(costs_m))
                     plot_costs_f.append(np.mean(costs_f))
                     labels.append(f"{restriction.name}")

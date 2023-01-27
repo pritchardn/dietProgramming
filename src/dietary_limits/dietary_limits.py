@@ -10,8 +10,8 @@ from pydantic import BaseModel
 
 
 class Sex(str, enum.Enum):
-    Male = 0
-    Female = 1
+    MALE = 0
+    FEMALE = 1
 
 
 class Unit(str, enum.Enum):
@@ -24,7 +24,6 @@ class Restriction(str, enum.Enum):
     FULL = 0
     VEGETARIAN = 1
     VEGAN = 2
-    # GLUTEN = 3
     LACTOSE = 3
     NUTS = 4
 
@@ -51,7 +50,7 @@ class Human(BaseModel):
     sex: Sex
     height: float
     weight: float
-    activity: float  # TODO: make enum 1.2-2.2
+    activity: float
 
 
 class NutritionLevels(BaseModel):
@@ -105,69 +104,69 @@ def _fetch_csv(filename: str) -> dict:
 def init_energy():
     return {
         'adult': {
-            Sex.Female: _fetch_csv('../../data/adult-female-energy.csv'),
-            Sex.Male: _fetch_csv('../../data/adult-male-energy.csv')
+            Sex.FEMALE: _fetch_csv('../../data/adult-female-energy.csv'),
+            Sex.MALE: _fetch_csv('../../data/adult-male-energy.csv')
         },
         'child': {
-            Sex.Female: _fetch_csv('../../data/child-female-energy.csv'),
-            Sex.Male: _fetch_csv('../../data/child-male-energy.csv')
+            Sex.FEMALE: _fetch_csv('../../data/child-female-energy.csv'),
+            Sex.MALE: _fetch_csv('../../data/child-male-energy.csv')
         }
     }
 
 
 def init_protein():
     return {
-        Sex.Female: _fetch_csv('../../data/female-protein.csv'),
-        Sex.Male: _fetch_csv('../../data/male-protein.csv')
+        Sex.FEMALE: _fetch_csv('../../data/female-protein.csv'),
+        Sex.MALE: _fetch_csv('../../data/male-protein.csv')
     }
 
 
 def init_fibre():
     return {
-        Sex.Female: _fetch_csv('../../data/female-fibre.csv'),
-        Sex.Male: _fetch_csv('../../data/male-fibre.csv')
+        Sex.FEMALE: _fetch_csv('../../data/female-fibre.csv'),
+        Sex.MALE: _fetch_csv('../../data/male-fibre.csv')
     }
 
 
 def init_water():
     return {
-        Sex.Female: _fetch_csv('../../data/female-water.csv'),
-        Sex.Male: _fetch_csv('../../data/male-water.csv')
+        Sex.FEMALE: _fetch_csv('../../data/female-water.csv'),
+        Sex.MALE: _fetch_csv('../../data/male-water.csv')
     }
 
 
 def init_alinoleic():
     return {
-        Sex.Female: _fetch_csv('../../data/female-alinoleic.csv'),
-        Sex.Male: _fetch_csv('../../data/male-alinoleic.csv')
+        Sex.FEMALE: _fetch_csv('../../data/female-alinoleic.csv'),
+        Sex.MALE: _fetch_csv('../../data/male-alinoleic.csv')
     }
 
 
 def init_linoleic():
     return {
-        Sex.Female: _fetch_csv('../../data/female-linoleic.csv'),
-        Sex.Male: _fetch_csv('../../data/male-linoleic.csv')
+        Sex.FEMALE: _fetch_csv('../../data/female-linoleic.csv'),
+        Sex.MALE: _fetch_csv('../../data/male-linoleic.csv')
     }
 
 
 def init_n3fat():
     return {
-        Sex.Female: _fetch_csv('../../data/female-n3fats.csv'),
-        Sex.Male: _fetch_csv('../../data/male-n3fats.csv')
+        Sex.FEMALE: _fetch_csv('../../data/female-n3fats.csv'),
+        Sex.MALE: _fetch_csv('../../data/male-n3fats.csv')
     }
 
 
 def init_minerals():
     return {
-        Sex.Female: _fetch_csv("../../data/female-minerals.csv"),
-        Sex.Male: _fetch_csv("../../data/male-minerals.csv")
+        Sex.FEMALE: _fetch_csv("../../data/female-minerals.csv"),
+        Sex.MALE: _fetch_csv("../../data/male-minerals.csv")
     }
 
 
 def init_vitamins():
     return {
-        Sex.Female: _fetch_csv("../../data/female-vitamins.csv"),
-        Sex.Male: _fetch_csv("../../data/male-vitamins.csv")
+        Sex.FEMALE: _fetch_csv("../../data/female-vitamins.csv"),
+        Sex.MALE: _fetch_csv("../../data/male-vitamins.csv")
     }
 
 
@@ -193,7 +192,8 @@ def cal_to_kj(calories: float):
 def calculate_energy(human: Human):
     """
     Uses the IOM equations to estimate EER
-    Institute of Medicine Equation. (2022, March 27). In Wikipedia. https://en.wikipedia.org/wiki/Institute_of_Medicine_Equation
+    Institute of Medicine Equation. (2022, March 27).
+    In Wikipedia. https://en.wikipedia.org/wiki/Institute_of_Medicine_Equation
     Elderly energy values assisted by https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7912404/
     Adjusted to use the Mifflin and St Jeor formula for those older than 65
     https://en.wikipedia.org/wiki/Harris%E2%80%93Benedict_equation
@@ -201,19 +201,19 @@ def calculate_energy(human: Human):
     :return: EER (MJ)
     """
     if 19 <= human.age < 65:
-        if human.sex == Sex.Male:
+        if human.sex == Sex.MALE:
             output = 662 - (9.53 * human.age) + human.activity * (
                     (15.91 * human.weight) + (539.6 * human.height))
         else:
             output = 354 - (6.91 * human.age) + human.activity * (
                     (9.36 * human.weight) + (726 * human.height))
     elif human.age >= 65:
-        if human.sex == Sex.Male:
+        if human.sex == Sex.MALE:
             output = (10 * human.weight) + (6.25 * human.height * 100) - (5 * human.age) + 5
         else:
             output = (10 * human.weight) + (6.25 * human.height * 100) - (5 * human.age) - 161
     else:
-        if human.sex == Sex.Male:
+        if human.sex == Sex.MALE:
             output = 88.5 - (61.9 * human.age) + human.activity * (
                     (26.7 * human.weight) + (903 * human.height))
         else:
@@ -223,9 +223,9 @@ def calculate_energy(human: Human):
 
 
 def find_best_index(target, values):
-    for i in range(len(values)):
-        if target <= values[i]:
-            return i
+    for idx, val in enumerate(values):
+        if target <= val:
+            return idx
     return -1
 
 
@@ -318,14 +318,12 @@ def calculate_vitamins(human: Human, vitamin_data: dict):
         'pantothenic_acid': Nutrient(unit="mg/day",
                                      rdi=current_data['Pantothenic Acid RDI (mg/day)'][best_index]),
         'biotin': Nutrient(unit="ug/day", rdi=current_data['Biotin RDI (ug/day)'][best_index]),
-        # 'choline': Nutrient(unit="mg/day", rdi=current_data['Choline RDI (mg/day)'][best_index], ul=current_data['Choline UL (mg/day)'][best_index]),
         'vitamin_c': Nutrient(unit="mg/day",
                               rdi=current_data['Vitamin C RDI (mg/day)'][best_index]),
         'vitamin_d': Nutrient(unit="ug/day", rdi=current_data['Vitamin D RDI (ug/day)'][best_index],
                               ul=current_data['Vitamin D UL (ug/day)'][best_index]),
         'vitamin_e': Nutrient(unit="mg/day", rdi=current_data['Vitamin E RDI (mg/day)'][best_index],
                               ul=current_data['Vitamin E UL (mg/day)'][best_index]),
-        # 'vitamin_k': Nutrient(unit="ug/day", rdi=current_data['Vitamin K RDI (ug/day)'][best_index])
     }
 
 
@@ -334,12 +332,9 @@ def nutrition_limits(human_model: Human, nutrient_data: dict) -> NutritionLevels
     output.energy = Nutrient(unit="kj", rdi=calculate_energy(human_model))
     output.protein = Nutrient(unit="g/day",
                               rdi=calculate_protein(human_model, nutrient_data['protein']))
-    water_liquid, water_food = calculate_water(human_model, nutrient_data['water'])
-    # output.water_liquid = Nutrient(unit="L/day", rdi=water_liquid)
+    _, water_food = calculate_water(human_model, nutrient_data['water'])
     output.water_food = Nutrient(unit="g/day", rdi=water_food * 1000, ul=water_food * 2000)
     output.fibre = Nutrient(unit="g/day", rdi=calculate_fibre(human_model, nutrient_data['fibre']))
-    # output.alinoleic = Nutrient(unit="g/day", rdi=calculate_alinoleic(human_model, nutrient_data['alinoleic']))
-    # output.linoleic = Nutrient(unit="g/day", rdi=calculate_linoleic(human_model, nutrient_data['linoleic']))
     n3_rdi, n3_ul = calculate_n3fat(human_model, nutrient_data['n3fat'])
     output.n3fat = Nutrient(unit="mg/day", rdi=n3_rdi, ul=n3_ul)
     vitamin_dict = calculate_vitamins(human_model, nutrient_data['vitamins'])
@@ -378,10 +373,10 @@ def nutrition_limits(human_model: Human, nutrient_data: dict) -> NutritionLevels
 
 if __name__ == "__main__":
     data = initialize_data()
-    test_human = Human(age=80, sex=Sex.Male, height=1.73, weight=88.29, activity=2.0)
-    # test_human = Human(age=12, sex=Sex.Male, height=1.2, weight=46, activity=1.2)
-    # test_human = Human(age=25, sex=Sex.Female, height=1.73, weight=83.9, activity=1.2)
-    # test_human = Human(age=12, sex=Sex.Female, height=1.10, weight=40, activity=1.2)
+    test_human = Human(age=80, sex=Sex.MALE, height=1.73, weight=88.29, activity=2.0)
+    # test_human = Human(age=12, sex=Sex.MALE, height=1.2, weight=46, activity=1.2)
+    # test_human = Human(age=25, sex=Sex.FEMALE, height=1.73, weight=83.9, activity=1.2)
+    # test_human = Human(age=12, sex=Sex.FEMALE, height=1.10, weight=40, activity=1.2)
     test_nutrients = nutrition_limits(test_human, data)
     for i in test_nutrients:
         print(i)

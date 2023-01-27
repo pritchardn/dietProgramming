@@ -83,7 +83,7 @@ def main():
     liquid_data = initialize_liquid_data()
     for key, dataset in liquid_data.items():
         food_data[key].extend(dataset)
-    human = Human(age=25, sex=Sex.Male, height=1.83, weight=83.9, activity=1.0)
+    human = Human(age=25, sex=Sex.MALE, height=1.83, weight=83.9, activity=1.0)
     diet = solve(limits_data, food_data, human, 1.2)
     out_dir = "../../results/"
     os.makedirs(out_dir, exist_ok=True)

@@ -65,8 +65,8 @@ def main(restriction: Restriction):
     for key, dataset in liquid_data.items():
         food_data[key].extend(dataset)
 
-    basic_sweep(Sex.Male, age_range, male_height_range, bmi_range, activity_range, restriction)
-    basic_sweep(Sex.Female, age_range, female_height_range, bmi_range, activity_range, restriction)
+    basic_sweep(Sex.MALE, age_range, male_height_range, bmi_range, activity_range, restriction)
+    basic_sweep(Sex.FEMALE, age_range, female_height_range, bmi_range, activity_range, restriction)
 
 
 if __name__ == "__main__":

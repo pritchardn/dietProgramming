@@ -39,7 +39,7 @@ def basic_sweep(sex: Sex, age_range, height_range, bmi_range, activity_range, re
 
 def main(restriction: Restriction):
     male_height_range = np.arange(1.63, 1.93, 0.05)
-    female_height_range = np.arange(1.5, 1.79, 0.05)
+    female_height_range = np.arange(1.5, 1.80, 0.05)
     bmi_range = np.arange(18.5, 30.5, 0.5)
     age_range = range(18, 81)
     activity_range = np.arange(1.0, 2.1, 0.1)

@@ -17,7 +17,7 @@ from src.dietary_limits.dietary_limits import Sex, Restriction
 
 def plot(sex: Sex, bmis, ages, activities, costs, whole_min, whole_max, restriction):
     fig, (ax1, ax2) = plt.subplots(1, 2, subplot_kw={"projection": "3d"})
-    fig.suptitle(f"{sex.name.title()} diet costs - {restriction}")
+    # fig.suptitle(f"{sex.name.title()} diet costs - {restriction}")
     cmap = cm.plasma
     norm = colors.Normalize(vmin=whole_min, vmax=whole_max)
     m = cm.ScalarMappable(norm=norm, cmap=cmap)
@@ -139,11 +139,15 @@ def main():
         restriction = Restriction(restriction)
         bmis_m, ages_m, activities_m, costs_m = plotting_data[restriction]["male"]
         bmis_f, ages_f, activities_f, costs_f = plotting_data[restriction]["female"]
-        whole_min = min([min(costs_m), min(costs_f)])
-        whole_max = max([max(costs_m), max(costs_f)])
-        plot(Sex.Male, bmis_m, ages_m, activities_m, costs_m, whole_min, whole_max,
+        min_male = min(costs_m)
+        max_male = max(costs_m)
+        min_female = min(costs_f)
+        max_female = max(costs_f)
+        # whole_min = min([min(costs_m), min(costs_f)])
+        # whole_max = max([max(costs_m), max(costs_f)])
+        plot(Sex.Male, bmis_m, ages_m, activities_m, costs_m, min_male, max_male,
              restriction.name)
-        plot(Sex.Female, bmis_f, ages_f, activities_f, costs_f, whole_min, whole_max,
+        plot(Sex.Female, bmis_f, ages_f, activities_f, costs_f, min_female, max_female,
              restriction.name)
 
     ages = [20, 50, 80]

@@ -6,6 +6,7 @@ Contains a data structure containing a solved diet and other relevant meta data.
 
 import json
 import os
+import csv
 
 from pydantic import BaseModel
 
@@ -40,3 +41,13 @@ class Diet(BaseModel):
         with open(f"{filename}{os.sep}{self._generate_filename()}.out", 'w',
                   encoding='utf-8') as ofile:
             ofile.write(self.to_string())
+
+        with open(f"{filename}{os.sep}{self._generate_filename()}.csv", 'w',
+                  encoding='utf-8') as ofile:
+            writer = csv.writer(ofile)
+            writer.writerow(self.nutrients.keys())
+            writer.writerow(self.nutrients.values())
+            writer.writerow(self.foods.keys())
+            writer.writerow(self.foods.values())
+            writer.writerow(['cost'])
+            writer.writerow([self.cost])

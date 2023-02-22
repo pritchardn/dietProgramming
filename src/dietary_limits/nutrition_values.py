@@ -49,7 +49,7 @@ def edited_columns():
 def filter_foods(data: pd.DataFrame, restriction: Restriction):
     restricted_food = restricted_foods(restriction)
     for food_group in restricted_food:
-        data = data[data['classification'].str.startswith(food_group) is False]
+        data = data[~data.classification.str.startswith(food_group)]
     if restriction == Restriction.LACTOSE:
         data = data[data['lactose'] == 0.0]
     return data

@@ -33,7 +33,7 @@ def main():
         foods, count = count_foods(Path(f"../../results/{restriction.name}"))
         print(restriction)
         print(count)
-        with open(f"{restriction.name}.csv", 'w') as ofile:
+        with open(f"{restriction.name}-constituents.csv", 'w') as ofile:
             writer = csv.writer(ofile)
             writer.writerow(fieldnames)
             writer.writerows(foods.items())
